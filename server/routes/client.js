@@ -14,3 +14,9 @@ clientRoutes.get('/:id', ClientController.getClientById)
 
 clientRoutes.delete('/:id', verificarToken, authorize(["admin"]), ClientController.deleteClient)
 
+clientRoutes.get(
+    "/status/:dni",
+    verificarToken,
+    authorize(["admin", "trainer"]),
+    ClientController.getClientStatusByDni
+)

@@ -152,5 +152,31 @@ export class ClientController {
             res.status(500).json({ message: "Internal server error" })
         }
     }
+    static async getClientStatusByDni(req, res) {
+        try {
+            const client = await ClientModel.getClientByDni(req.params.dni)
+
+            if (!client) {
+                return res.status(404).json({ message: "Cliente no encontrado" })
+            }
+
+            const now = new Date()
+
+            const daysLeft = client.membershipEnd
+                ? Math.ceil((client.membershipEnd - now) / (1000 * 60 * 60 * 24))
+                : 0
+
+            const status = client.membershipEnd >= now ? "active" : "expired"
+
+            res.json({
+                name: client.name,
+                status,
+                daysLeft
+            })
+
+        } catch {
+            res.status(500).json({ message: "Error" })
+        }
+    }
 }
 

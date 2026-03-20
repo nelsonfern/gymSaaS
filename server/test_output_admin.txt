@@ -1,0 +1,25 @@
+﻿Starting Admin tests...
+Connected to MongoDB
+Connected to MongoDB
+Admin Logged in, token: OK
+[OK]   GET /clients/ -> 200
+[OK]   POST /clients/ -> 201
+[OK]   GET /clients/69bb57c875e0e3a81d56bcd2 -> 200
+[OK]   PUT /clients/69bb57c875e0e3a81d56bcd2 -> 200
+[FAIL] PUT /clients/69bb57c875e0e3a81d56bcd2/plan -> 400: {"message":"El plan es requerido"}
+[OK]   DELETE /clients/69bb57c875e0e3a81d56bcd2 -> 200
+[FAIL] GET /clients/status/99999999 -> 404: {"message":"Cliente no encontrado"}
+[OK]   GET /users/profile -> 200
+[OK]   PUT /users/update/69bcc4718f4e59cb2997dfa5 -> 200
+[OK]   GET /plans/ -> 200
+[FAIL] POST /plans/ -> 400: {"error":["Path `durationDays` is required."]}
+[FAIL] GET /plans/undefined -> 500: {"error":"input must be a 24 character hex string, 12 byte Uint8Array, or an integer"}
+[FAIL] PUT /plans/undefined -> 500: {"error":"Error interno del servidor"}
+[FAIL] DELETE /plans/undefined -> 500: {"error":"input must be a 24 character hex string, 12 byte Uint8Array, or an integer"}
+[FAIL] POST /payments/ -> 400: {"message":"Cliente o plan no existe"}
+[OK]   GET /payments/ -> 200
+[OK]   GET /payments/client/69bb57c875e0e3a81d56bcd2 -> 200
+[FAIL] POST /checkins/checkin -> 404: {"message":"Cliente no encontrado"}
+[FAIL] GET /checkins/checkin/69bb57c875e0e3a81d56bcd2 -> 500: {"message":"Error"}
+[OK]   GET /checkins/checkins/today -> 200
+Disconnected from MongoDB

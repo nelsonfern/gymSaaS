@@ -23,5 +23,9 @@ export class ClientModel {
         return await Client.findOneAndDelete({ _id: new mongoose.Types.ObjectId(id) })
 
     }
+    static async getClientByDni(dni) {
+        return await Client.findOne({ dni })
+    }
+
 }
 

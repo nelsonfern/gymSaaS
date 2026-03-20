@@ -1,0 +1,24 @@
+﻿Starting tests...
+Logged in, token: OK
+[OK]   GET /clients/ -> 200
+[FAIL] POST /clients/ -> 400: {"error":["Phone must be 7-15 digits"]}
+[OK]   GET /clients/69bb57c875e0e3a81d56bcd2 -> 200
+[OK]   PUT /clients/69bb57c875e0e3a81d56bcd2 -> 200
+[FAIL] PUT /clients/69bb57c875e0e3a81d56bcd2/plan -> 404: {"message":"El plan especificado no existe"}
+[FAIL] DELETE /clients/69bb57c875e0e3a81d56bcd2 -> 403: {"error":"No autorizado"}
+[FAIL] GET /clients/status/99999999 -> 403: {"error":"No autorizado"}
+[OK]   POST /users/register -> 201
+[OK]   POST /users/login -> 200
+[OK]   GET /users/profile -> 200
+[OK]   PUT /users/update/69bcc42a8f4e59cb2997df8b -> 200
+[OK]   GET /plans/ -> 200
+[FAIL] POST /plans/ -> 403: {"error":"No autorizado"}
+[FAIL] GET /plans/60d5ecb54cb912001f301abc -> 404: {"message":"Plan no encontrado"}
+[FAIL] PUT /plans/60d5ecb54cb912001f301abc -> 403: {"error":"No autorizado"}
+[FAIL] DELETE /plans/60d5ecb54cb912001f301abc -> 403: {"error":"No autorizado"}
+[FAIL] POST /payments/ -> 400: {"message":"Cliente o plan no existe"}
+[OK]   GET /payments/ -> 200
+[OK]   GET /payments/client/69bb57c875e0e3a81d56bcd2 -> 200
+[FAIL] POST /checkins/checkin -> 403: {"error":"No autorizado"}
+[FAIL] GET /checkins/checkin/69bb57c875e0e3a81d56bcd2 -> 403: {"error":"No autorizado"}
+[FAIL] GET /checkins/checkins/today -> 403: {"error":"No autorizado"}
