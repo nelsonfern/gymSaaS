@@ -42,12 +42,6 @@ export function AddClientSlideOver() {
       return;
     }
 
-    // Validación de Plan
-    if (!data.plan) {
-      toast.error("Error: Debes seleccionar un plan de membresía");
-      return;
-    }
-
     // Delegamos todo el manejo de red, base de datos y notificaciones al Store (Zustand)
     await createClient(data, () => {
       e.target.reset(); // Limpia los campos

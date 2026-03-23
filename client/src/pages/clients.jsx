@@ -1,11 +1,12 @@
 import { useClientStore } from "../store/useClientStore";
 import { UserPlus } from "lucide-react";
 import { StatCard } from "../components/StatCard";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { DataTable } from "../components/DataTable";
 import { useSearchParams } from "react-router-dom";
 import api from "../api/axios";
 import { useNavigate } from "react-router-dom";
+import { usePlansStore } from "../store/usePlansStore";
 
 export default function Clients() {
   const openSlide = useClientStore((state) => state.openSlide);
@@ -15,7 +16,6 @@ export default function Clients() {
   const fetchClients = useClientStore((state) => state.fetchClients);
   const fetchStats = useClientStore((state) => state.fetchStats);
   const deleteClient = useClientStore((state) => state.deleteClient);
-
   const totalClients = useClientStore((state) => state.totalClients);
   const activeClients = useClientStore((state) => state.activeClients);
   const expiredClients = useClientStore((state) => state.expiredClients);
@@ -31,7 +31,10 @@ export default function Clients() {
     const pageParam = parseInt(searchParams.get("page")) || 1;
     const searchParam = searchParams.get("search") || "";
 
-    useClientStore.setState({ page: pageParam, search: searchParam });
+    useClientStore.setState({
+      page: pageParam,
+      search: searchParam,
+    });
     fetchClients();
   }, [searchParams]);
 
@@ -83,18 +86,20 @@ export default function Clients() {
     {
       header: "ESTADO",
       csvValue: (client) => client.status.toUpperCase(),
-      render: (client) => (
-        <span
-          className={`px-3 py-1 rounded-full text-xs font-medium
-                ${
-                  client.status === "active"
-                    ? "bg-blue-100 text-blue-600"
-                    : "bg-orange-100 text-orange-600"
-                }`}
-        >
-          {client.status.toUpperCase()}
-        </span>
-      ),
+      render: (client) =>
+        client.status === "activo" ? (
+          <span
+            className={`px-3 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-600`}
+          >
+            {client.status.toUpperCase()}
+          </span>
+        ) : (
+          <span
+            className={`px-3 py-1 rounded-full text-xs font-medium bg-red-100 text-red-600`}
+          >
+            {client.status.toUpperCase().replace("_", " ")}
+          </span>
+        ),
     },
     {
       header: "FECHA DE VENCIMIENTO",

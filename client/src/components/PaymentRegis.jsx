@@ -36,9 +36,8 @@ export function PaymentRegis() {
     const timer = setTimeout(async () => {
       setSearching(true);
       try {
-        const res = await api.get(`/clients?search=${dni}`);
-        // El search devuelve un array, tomamos el primero que coincida exactamente
-        const exact = res.data.data.find((c) => c.dni === dni);
+        const res = await api.get(`/clients/byDni/${dni}`);
+        const exact = res.data;
         setFoundClient(exact || null);
       } catch {
         setFoundClient(null);
@@ -56,9 +55,9 @@ export function PaymentRegis() {
     if (!price) return;
 
     const payment = {
-      client: foundClient._id,  // el backend espera "client"
-      plan: selectedPlan,        // el backend espera "plan"
-      amount: price,             // el backend espera "amount"
+      client: foundClient._id, // el backend espera "client"
+      plan: selectedPlan, // el backend espera "plan"
+      amount: price, // el backend espera "amount"
       method,
     };
     usePaymentStore.getState().createPayment(payment);

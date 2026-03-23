@@ -44,8 +44,12 @@ const clientSchema = new mongoose.Schema({
 
     status: {
         type: String,
-        enum: ['active', 'expired'],
-        default: 'expired'
+        enum: ['activo', 'vencido', 'vence_pronto', 'sin_plan'],
+        default: 'sin_plan'
+    },
+    delete: {
+        type: Boolean,
+        default: false
     }
 
 }, {
@@ -54,9 +58,9 @@ const clientSchema = new mongoose.Schema({
 
 clientSchema.methods.updateStatus = function () {
     if (!this.membershipEnd || this.membershipEnd < new Date()) {
-        this.status = 'expired';
+        this.status = 'vencido';
     } else {
-        this.status = 'active';
+        this.status = 'activo';
     }
 };
 

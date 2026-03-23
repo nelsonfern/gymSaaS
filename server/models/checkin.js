@@ -6,7 +6,7 @@ export class CheckinModel {
         return await Checkin.create(data)
     }
     static async getCheckins() {
-        return await Checkin.find().populate('client')
+        return await Checkin.find().populate('client').populate('plan', 'name').sort({ date: -1 })
     }
     static async getCheckinsByClient(clientId) {
         return await Checkin.find({ client: new mongoose.Types.ObjectId(clientId) })
@@ -28,6 +28,14 @@ export class CheckinModel {
             date: { $gte: startOfDay, $lte: endOfDay }
         })
             .populate("client", "name lastName dni status")
+            .populate("plan", "name")
             .sort({ date: -1 })
+    }
+    static async findDeniedToday(clientId, startOfDay, endOfDay) {
+        return Checkin.findOne({
+            client: clientId,
+            status: "denegado",
+            date: { $gte: startOfDay, $lte: endOfDay },
+        });
     }
 }

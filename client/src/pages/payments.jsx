@@ -67,7 +67,7 @@ export default function Payments() {
                   `${p.client?.name ?? ""} ${p.client?.lastName ?? ""}`.trim(),
                 render: (p) => (
                   <p className="font-normal text-gray-600 text-sm">
-                    {p.client.name + " " + p.client.lastName}
+                    {p.client?.name + " " + p.client?.lastName}
                   </p>
                 ),
               },

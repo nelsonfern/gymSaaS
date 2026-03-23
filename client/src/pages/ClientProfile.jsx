@@ -8,6 +8,7 @@ import {
   Phone,
   Users,
   LogIn,
+  LogOut,
   Pencil,
   Snowflake,
   Plus,
@@ -30,6 +31,7 @@ const methodLabel = (m) => {
 
 export default function ClientProfile() {
   const { dni } = useParams(); // DNI desde la URL
+  const { getClientByDni } = useClientStore();
   const navigate = useNavigate();
   const { openSlide } = useClientStore();
   const isSlideOpen = useClientStore((state) => state.isSlideOpen);
@@ -39,8 +41,8 @@ export default function ClientProfile() {
 
   // Función para cargar el cliente por DNI
   const fetchClient = async () => {
-    const res = await api.get(`/clients/byDni/${dni}`);
-    return res.data;
+    const res = await getClientByDni(dni);
+    return res;
   };
 
   // Carga inicial: cliente por DNI, luego sus pagos y checkins
@@ -246,14 +248,18 @@ export default function ClientProfile() {
                   >
                     <div className="flex items-center gap-3">
                       <div className="bg-indigo-50 p-1.5 rounded-md">
-                        <LogIn size={14} className="text-indigo-500" />
+                        {c.status === "permitido" ? (
+                          <LogIn size={14} className="text-indigo-500" />
+                        ) : (
+                          <LogOut size={14} className="text-red-500" />
+                        )}
                       </div>
                       <div>
                         <p className="text-sm font-medium text-gray-700">
                           {new Date(c.date).toLocaleDateString([], opciones)}
                         </p>
                         <p className="text-xs text-gray-400">
-                          Check-in registrado
+                          {c.status.toUpperCase()}
                         </p>
                       </div>
                     </div>

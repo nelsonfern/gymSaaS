@@ -28,16 +28,16 @@ export function RecentPayments({ data }) {
                   />
                   <div className="min-w-0 flex-auto">
                     <p className="text-sm/6 font-semibold text-gray-500">
-                      {payment.client.name + " " + payment.client.lastName}
+                      {payment.client?.name + " " + payment.client?.lastName}
                     </p>
                     <p className="mt-1 truncate text-xs/5 text-gray-400">
-                      {payment.plan.name}
+                      Plan: {payment?.plan?.name}
                     </p>
                   </div>
                 </div>
                 <div className="hidden shrink-0 sm:flex sm:flex-col sm:items-end">
                   <p className="text-sm/6 font-semibold text-gray-500">
-                    {payment.amount}
+                    $ {payment.amount}
                   </p>
                   <p className="mt-1 truncate text-xs/5 text-gray-400">
                     {new Date(payment.paymentDate).toLocaleDateString([], {

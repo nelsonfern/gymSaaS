@@ -22,11 +22,6 @@ export function Layout({ children }) {
       </div>
       {slideMode === "add" && <AddClientSlideOver />}
       {slideMode === "edit" && <EditClientSlideOver />}
-      <img
-        src="/ambitious-studio-rick-barrett-wZlsHihO2g4-unsplash.jpg"
-        alt="gym"
-        className="absolute inset-0 w-full h-full object-cover opacity-15 z-[-1] blur-xs "
-      />
     </div>
   );
 }

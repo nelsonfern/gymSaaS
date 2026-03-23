@@ -8,6 +8,7 @@ import Clients from "./pages/clients";
 import Plans from "./pages/plans";
 import Payments from "./pages/payments";
 import ClientProfile from "./pages/ClientProfile";
+import Checkin from "./pages/Checkin";
 function App() {
   return (
     <>
@@ -62,6 +63,14 @@ function App() {
                 <Layout>
                   <Payments />
                 </Layout>
+              </ProtectedRoutes>
+            }
+          />
+          <Route
+            path="/checkin"
+            element={
+              <ProtectedRoutes>
+                <Checkin />
               </ProtectedRoutes>
             }
           />

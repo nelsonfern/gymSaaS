@@ -24,11 +24,39 @@ export default function Dashboard() {
     (state) => state.fetchTodayCheckins,
   );
 
+  const setCheckinState = useCheckinStore.setState;
+
   useEffect(() => {
     fetchStats();
     fetchPaymentsData();
-    fetchTodayCheckins();
+    fetchTodayCheckins(true);
   }, [fetchStats, fetchPaymentsData, fetchTodayCheckins]);
+
+  useEffect(() => {
+    const handleStorage = (e) => {
+      if (e.key === "newCheckin") {
+        try {
+          const checkin = JSON.parse(e.newValue);
+
+          if (checkin) {
+            setCheckinState((state) => ({
+              todayCheckins: [
+                checkin,
+                ...state.todayCheckins.filter((c) => c._id !== checkin._id),
+              ],
+            }));
+          }
+        } catch (err) {
+          console.error("Error parsing checkin:", err);
+        }
+      }
+    };
+
+    window.addEventListener("storage", handleStorage);
+
+    return () => window.removeEventListener("storage", handleStorage);
+  }, [setCheckinState]);
+
   return (
     <>
       <div className="mb-4 p-2">
@@ -39,8 +67,8 @@ export default function Dashboard() {
           Bienvenido de nuevo, aquí está lo que está pasando hoy en tu gimnasio.
         </p>
       </div>
+
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 w-full">
-        {/* grid con tantas rows como cards haya */}
         <div className="p-2">
           <StatCard
             title="Total Clientes"
@@ -54,26 +82,28 @@ export default function Dashboard() {
         <div className="p-2">
           <StatCard
             title="Total Ingresos del mes"
-            value={totalIncome}
+            value={`$${totalIncome}`}
             icon={<Wallet size={24} />}
             color="bg-green-100"
             subtitle="Ingresos del mes"
           />
         </div>
+
         <div className="p-2">
           <StatCard
             title="Miembros Activos"
             value={activeClients}
             textColor="text-blue-500"
             icon={<Users size={24} />}
-            color="bg-blue-100 "
+            color="bg-blue-100"
             subtitle="Miembros activos"
           />
         </div>
+
         <div className="p-2">
           <StatCard
             title="Miembros Inactivos"
-            value={expiredClients}
+            value={`${expiredClients}`}
             textColor="text-red-500"
             icon={<Users size={24} />}
             color="bg-red-100"
@@ -81,10 +111,12 @@ export default function Dashboard() {
           />
         </div>
       </div>
+
       <div className="flex flex-col md:flex-row w-full">
         <div className="p-2 w-full md:w-2/3">
           <RecentActivity data={checkins} />
         </div>
+
         <div className="p-2 w-full md:w-1/3">
           <RecentPayments data={activity} />
         </div>

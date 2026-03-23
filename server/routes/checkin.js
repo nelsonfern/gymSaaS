@@ -2,7 +2,7 @@ import express from "express";
 import { CheckinController } from "../controllers/checkin.js";
 import { verificarToken, authorize } from "../helpers/auth.js";
 export const checkinRoutes = express.Router()
-
+checkinRoutes.get("/", verificarToken, authorize(["admin", "trainer"]), CheckinController.getCheckins)
 checkinRoutes.post("/", verificarToken, authorize(["admin", "trainer"]), CheckinController.checkinByDni)
 
 checkinRoutes.get(
