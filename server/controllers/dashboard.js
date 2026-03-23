@@ -6,18 +6,13 @@ export class DashboardController {
     static async getDashboard(req, res) {
         try {
             const now = new Date()
-
+            const totalClients = await ClientModel.countClients()
             const totalIncome = await PaymentModel.getPayments().aggregate([
                 { $group: { _id: null, total: { $sum: "$amount" } } }
             ])
 
-            const activeClients = await ClientModel.getClients().countDocuments({
-                membershipEnd: { $gte: now }
-            })
-
-            const expiredClients = await ClientModel.getClients().countDocuments({
-                membershipEnd: { $lt: now }
-            })
+            const activeClients = await ClientModel.countActiveClients()
+            const expiredClients = await ClientModel.countExpiredClients()
             const monthlyIncome = await PaymentModel.getPayments().aggregate([
                 {
                     $match: {

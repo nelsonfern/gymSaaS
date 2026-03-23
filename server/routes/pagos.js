@@ -4,6 +4,13 @@ import { verificarToken, authorize } from "../helpers/auth.js"
 
 export const paymentsRouter = Router()
 
+paymentsRouter.get(
+    "/total",
+    verificarToken,
+    authorize(["admin", "staff"]),
+    PaymentController.getTotalPayments
+)
+
 paymentsRouter.post(
     "/",
     verificarToken,
@@ -11,7 +18,7 @@ paymentsRouter.post(
     PaymentController.createPayment
 )
 
-// 🔥 Obtener todos los pagos (admin)
+//  Obtener todos los pagos cualquiera puede verlos, para cargar a una table
 paymentsRouter.get(
     "/",
     verificarToken,
@@ -19,7 +26,7 @@ paymentsRouter.get(
     PaymentController.getPayments
 )
 
-// 🔥 Obtener pagos por cliente (admin y trainer)
+//  Obtener pagos por cliente (admin y trainer)
 paymentsRouter.get(
     "/client/:clientId",
     verificarToken,

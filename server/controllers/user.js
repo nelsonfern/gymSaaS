@@ -27,11 +27,11 @@ export class UserController {
             const { email, password } = req.body
             const userExist = await UserModel.getUser({ email })
             if (!userExist) {
-                return res.status(400).json({ error: 'El usuario no existe' })
+                return res.status(404).json({ error: 'El usuario no existe' })
             }
             const isPasswordValid = await bcrypt.compare(password, userExist.password)
             if (!isPasswordValid) {
-                return res.status(400).json({ error: 'Contraseña incorrecta' })
+                return res.status(401).json({ error: 'Contraseña incorrecta' })
             }
             const token = generarToken(userExist)
             res.status(200).json({ message: 'Login exitoso', token })

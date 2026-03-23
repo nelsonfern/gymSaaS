@@ -6,7 +6,14 @@ export class CheckinController {
         try {
             const { dni } = req.body
 
-            const client = await ClientModel.getClientByDni(dni)
+            if (!dni) {
+                return res.status(400).json({ message: "El DNI es requerido" })
+            }
+
+            // Sanitizamos asegurando que sea un string limpio y sin espacios accidentales
+            const cleanDni = String(dni).trim()
+
+            const client = await ClientModel.getClientByDni(cleanDni)
 
             if (!client) {
                 return res.status(404).json({ message: "Cliente no encontrado" })
@@ -14,8 +21,13 @@ export class CheckinController {
 
             const now = new Date()
 
-            //  validar membresía
-            if (!client.membershipEnd || client.membershipEnd < now) {
+            //  validar si tiene membresía asignada aún
+            if (!client.membershipEnd) {
+                return res.status(400).json({ message: "El cliente no cuenta con una membresía asignada" })
+            }
+
+            //  validar membresía vencida
+            if (client.membershipEnd < now) {
                 return res.status(400).json({ message: "Membresía vencida" })
             }
 
@@ -60,7 +72,8 @@ export class CheckinController {
 
             res.json(checkins)
 
-        } catch {
+        } catch (e){
+            console.log(e)
             res.status(500).json({ message: "Error" })
         }
     }

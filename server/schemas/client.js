@@ -17,7 +17,6 @@ const clientSchema = new mongoose.Schema({
     },
     email: {
         type: String,
-        unique: true,
         required: true,
         lowercase: true,
         trim: true,
@@ -46,7 +45,7 @@ const clientSchema = new mongoose.Schema({
     status: {
         type: String,
         enum: ['active', 'expired'],
-        default: 'active'
+        default: 'expired'
     }
 
 }, {
@@ -54,7 +53,7 @@ const clientSchema = new mongoose.Schema({
 });
 
 clientSchema.methods.updateStatus = function () {
-    if (this.membershipEnd && this.membershipEnd < new Date()) {
+    if (!this.membershipEnd || this.membershipEnd < new Date()) {
         this.status = 'expired';
     } else {
         this.status = 'active';

@@ -3,7 +3,7 @@ import 'dotenv/config'
 import { corsMiddleware } from './helpers/cors.js'
 import helmet from 'helmet'
 import rateLimit from 'express-rate-limit'
-import mongoSanitize from 'express-mongo-sanitize'
+import mongoSanitize from '@exortek/express-mongo-sanitize'
 
 import { clientRoutes } from './routes/client.js'
 import DbClient from './config/dbClient.js'
@@ -29,9 +29,9 @@ app.use(mongoSanitize())
 
 // Protección contra "Too Many Requests" (DDoS o Fuerza bruta)
 const apiLimiter = rateLimit({
-    windowMs: 15 * 60 * 1000, // 15 minutos
-    max: 100, // Límite de 100 peticiones cada 15 min por IP
-    message: { message: "Demasiadas peticiones a la API. Intenta nuevamente en 15 minutos." }
+    windowMs: 1000, // 1 segundo
+    max: 10, // Límite de 10 peticiones cada 1 segundo por IP
+    message: { message: "Demasiadas peticiones a la API. Intenta nuevamente en 1 segundo." }
 })
 
 const authLimiter = rateLimit({

@@ -16,7 +16,7 @@ export class PlanModel {
         return await Plan.findOneAndUpdate({ _id: new mongoose.Types.ObjectId(id) }, { $set: plan }, { new: true, runValidators: true })
     }
     static async deletePlan(id) {
-        // En lugar de findOneAndDelete, hacemos un soft-delete
-        return await Plan.findOneAndUpdate({ _id: new mongoose.Types.ObjectId(id) }, { isActive: false }, { new: true })
+        // En lugar de soft-delete, hacemos un DELETE real a petición
+        return await Plan.findOneAndDelete({ _id: new mongoose.Types.ObjectId(id) })
     }
 }

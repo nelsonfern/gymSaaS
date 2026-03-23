@@ -1,0 +1,22 @@
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+@import "tailwindcss";
+:root {
+  
+
+  --color-primary: #2463eb;
+  --color-secondary: #64748b;
+  --color-tertiary: #d97706;
+  --color-neutral: #374151;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: 'Manrope', sans-serif;
+  }
+  p, span, a, button, li, th, td, tr{
+    font-family: 'Inter', sans-serif;
+  }
+body {
+  /*el background como un degra*/
+  background-color: #F3F4F6;
+}

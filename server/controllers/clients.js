@@ -1,7 +1,7 @@
 import express from 'express'
 import { ClientModel } from '../models/client.js'
 import { PlanModel } from '../models/plan.js'
-
+import Client from '../schemas/client.js'
 export class ClientController {
     //manejo de errores en el create, validaciones de required de mongoose
 
@@ -20,7 +20,7 @@ export class ClientController {
                 })
             }
             if (e.code === 11000) {
-                return res.status(400).json({
+                return res.status(409).json({
                     error: "El cliente ya existe"
                 })
             }
@@ -37,7 +37,7 @@ export class ClientController {
     }
     static async updateClient(req, res) {
         try {
-            const allowedUpdates = ["name", "lastName", "phone"]
+            const allowedUpdates = ["name", "lastName", "phone", "dni", "email"]
 
             const updates = Object.keys(req.body)
 
@@ -130,14 +130,75 @@ export class ClientController {
             res.status(500).json({ message: "Internal server error" })
         }
     }
-    static async getClients(req, res) {
+    //separar clients de las stats para paginacion y mas rendimiento
+    static async getClientsStats(req, res) {
         try {
-            const data = await ClientModel.getClients()
-            res.status(200).json(data)
+            const totalClients = await ClientModel.countClients()
+            const activeClients = await ClientModel.countActiveClients()
+            const expiredClients = await ClientModel.countExpiredClients()
+            const expiringSoonClients = await ClientModel.getClientsExpiringSoon()
+            const newsThisMonthClients = await ClientModel.getClientsNewsThisMonth()
+            // on plans id put the name of the plan
+        
+
+            res.status(200).json({ totalClients, activeClients, expiredClients, expiringSoonClients, newsThisMonthClients })
         } catch (e) {
-            res.status(500).json({ message: "Internal server error" })
+            res.status(500).json({ message: e })
+            console.log(e)
         }
     }
+    //hacer un get clients con paginacion
+    static async getClients(req, res) {
+  try {
+    const search = req.query.search || "";
+
+    const query = search
+      ? {
+          $or: [
+            { name: { $regex: search, $options: "i" } },
+            { lastName: { $regex: search, $options: "i" } },
+            { dni: { $regex: search, $options: "i" } },
+            { email: { $regex: search, $options: "i" } }
+          ]
+        }
+      : {};
+
+    if (req.query.page && req.query.limit) {
+      const page = parseInt(req.query.page) || 1;
+      const limit = parseInt(req.query.limit) || 10;
+      const skip = (page - 1) * limit;
+
+      const data = await ClientModel.getClients({ skip, limit, query });
+      const total = await Client.countDocuments(query);
+
+      const totalPages = Math.ceil(total / limit);
+
+      return res.status(200).json({
+        data,
+        total,
+        page,
+        limit,
+        totalPages
+      });
+    }
+
+    // 🔹 sin paginación
+    const data = await ClientModel.getClients({ query });
+    const total = data.length;
+
+    return res.status(200).json({
+      data,
+      total,
+      page: 1,
+      limit: total,
+      totalPages: 1
+    });
+
+  } catch (e) {
+    res.status(500).json({ message: e.message || 'Error fetching clients' });
+    console.log(e);
+  }
+}
     static async getClientById(req, res) {
         try {
             const data = await ClientModel.getClientById(req.params.id)
@@ -174,6 +235,18 @@ export class ClientController {
                 daysLeft
             })
 
+        } catch {
+            res.status(500).json({ message: "Error" })
+        }
+    }
+
+    static async getClientByDni(req, res) {
+        try {
+            const client = await ClientModel.getClientByDni(req.params.dni)
+            if (!client) {
+                return res.status(404).json({ message: "Cliente no encontrado" })
+            }
+            res.status(200).json(client)
         } catch {
             res.status(500).json({ message: "Error" })
         }

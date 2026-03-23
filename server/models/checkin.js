@@ -27,7 +27,7 @@ export class CheckinModel {
         return await Checkin.find({
             date: { $gte: startOfDay, $lte: endOfDay }
         })
-            .populate("client", "name lastName dni")
+            .populate("client", "name lastName dni status")
             .sort({ date: -1 })
     }
 }
