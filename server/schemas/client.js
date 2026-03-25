@@ -59,6 +59,8 @@ const clientSchema = new mongoose.Schema({
 clientSchema.methods.updateStatus = function () {
     if (!this.membershipEnd || this.membershipEnd < new Date()) {
         this.status = 'vencido';
+    } else if (this.membershipEnd < new Date(new Date().getTime() + 7 * 24 * 60 * 60 * 1000)) {
+        this.status = 'vence_pronto';
     } else {
         this.status = 'activo';
     }

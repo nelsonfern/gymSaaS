@@ -12,6 +12,7 @@ export const usePaymentStore = create((set, get) => ({
   totalPages: 1,
   limit: 7,
   search: "",
+
   createPayment: async (data) => {
     try {
       const res = await api.post("/payments", data);
@@ -31,13 +32,11 @@ export const usePaymentStore = create((set, get) => ({
       return false;
     }
   },
-  fetchPaymentsData: async (force = false) => {
-    const { page, limit, search } = get();
-    if (!force && get().paymentsLoaded) return;
-
+  fetchPaymentsData: async () => {
     set({ isLoading: true });
     try {
       const { page, limit, search } = get();
+
       const [totalIncomeRes, paymentsRes] = await Promise.all([
         api.get("/payments/total"),
         api.get(`/payments?page=${page}&limit=${limit}&search=${search}`),
@@ -50,7 +49,6 @@ export const usePaymentStore = create((set, get) => ({
         totalIncome: value || 0,
         payments: paymentsRes.data.data || [],
         totalPages: paymentsRes.data.totalPages || 1,
-        paymentsLoaded: true,
       });
     } catch (error) {
       console.error("Error cargando pagos:", error);
@@ -58,4 +56,5 @@ export const usePaymentStore = create((set, get) => ({
       set({ isLoading: false });
     }
   },
+  setPage: (page) => set({ page }),
 }));

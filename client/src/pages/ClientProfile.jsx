@@ -104,7 +104,7 @@ export default function ClientProfile() {
                   : "bg-orange-100 text-orange-500"
               }`}
             >
-              {client?.status?.toUpperCase() ?? "—"}
+              {client?.status?.toUpperCase().replace("_", " ") ?? "—"}
             </span>
           </div>
           <p className="text-sm text-gray-400 mb-4">DNI {client?.dni}</p>
@@ -141,28 +141,34 @@ export default function ClientProfile() {
             ))}
           </div>
         </div>
-
-        <div className="bg-gray-50 border border-gray-100 rounded-xl px-6 py-4 flex gap-6 shrink-0 text-center">
-          <div>
-            <p className="text-[10px] text-gray-400 uppercase font-semibold tracking-wide mb-1">
-              Plan actual
-            </p>
-            <p className="text-sm font-bold text-indigo-600">
-              {client?.plan?.name ? `Plan: ${client.plan.name}` : "Sin plan"}
-            </p>
+        <div className="flex flex-col items-center justify-center gap-1">
+          <div className="bg-gray-50 border border-gray-100 rounded-xl px-6 py-4 flex gap-6 shrink-0 text-center">
+            <div>
+              <p className="text-[10px] text-gray-400 uppercase font-semibold tracking-wide mb-1">
+                Plan actual
+              </p>
+              <p className="text-sm font-bold text-indigo-600">
+                {client?.plan?.name ? `Plan: ${client.plan.name}` : "Sin plan"}
+              </p>
+            </div>
+            <div className="w-px bg-gray-200" />
+            <div>
+              <p className="text-[10px] text-gray-400 uppercase font-semibold tracking-wide mb-1">
+                Vencimiento
+              </p>
+              <p className="text-sm font-bold text-gray-700">
+                {client?.membershipEnd
+                  ? new Date(client.membershipEnd).toLocaleDateString(
+                      [],
+                      opciones,
+                    )
+                  : "—"}
+              </p>
+            </div>
           </div>
-          <div className="w-px bg-gray-200" />
           <div>
-            <p className="text-[10px] text-gray-400 uppercase font-semibold tracking-wide mb-1">
-              Vencimiento
-            </p>
-            <p className="text-sm font-bold text-gray-700">
-              {client?.membershipEnd
-                ? new Date(client.membershipEnd).toLocaleDateString(
-                    [],
-                    opciones,
-                  )
-                : "—"}
+            <p className="text-xs font-medium text-gray-400 ">
+              Dias restantes: {client?.daysLeft ? client.daysLeft : "—"}
             </p>
           </div>
         </div>

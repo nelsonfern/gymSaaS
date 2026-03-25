@@ -25,43 +25,53 @@ export const useClientStore = create((set, get) => ({
   page: 1,
   limit: 10,
   totalPages: 1,
-  status: "",
-  plan: "",
+  filters: {
+    status: "",
+    plan: "",
+  },
   isLoading: false,
   statsLoaded: false,
-  lastFetchedParams: { page: null, search: null },
+  lastFetchedParams: {
+    page: null,
+    search: "",
+    filters: { status: "", plan: "" },
+  },
 
   fetchClients: async (force = false) => {
-    const { page, limit, search, status, plan, lastFetchedParams } = get();
+    const { page, limit, search, filters, lastFetchedParams } = get();
 
+    // evitar refetch innecesario
     if (
       !force &&
-      lastFetchedParams.page === page &&
-      lastFetchedParams.search === search &&
-      lastFetchedParams.status === status &&
-      lastFetchedParams.plan === plan
-    )
+      lastFetchedParams?.page === page &&
+      lastFetchedParams?.search === search &&
+      lastFetchedParams?.filters?.status === filters.status &&
+      lastFetchedParams?.filters?.plan === filters.plan
+    ) {
       return;
+    }
 
     set({ isLoading: true });
 
     try {
-      const { page, limit, search } = get();
-
-      const res = await api.get(`/clients?`, {
+      const res = await api.get(`/clients`, {
         params: {
           page,
           limit,
           search,
-          status,
-          plan,
+          status: filters.status,
+          plan: filters.plan,
         },
       });
 
       set({
         clients: res.data.data || [],
         totalPages: res.data.totalPages || 1,
-        lastFetchedParams: { page, search, status, plan },
+        lastFetchedParams: {
+          page,
+          search,
+          filters: { ...filters }, // 👈 importante
+        },
       });
     } catch (error) {
       console.error("Error fetching clients:", error);
@@ -78,14 +88,12 @@ export const useClientStore = create((set, get) => ({
     set({ search });
     get().fetchClients();
   },
-  setStatus: (status) => {
-    set({ status });
-    get().fetchClients();
-  },
-  setPlan: (plan) => {
-    set({ plan });
-    get().fetchClients();
-  },
+
+  setFilters: (filters) =>
+    set((state) => ({
+      filters: { ...state.filters, ...filters },
+      page: 1, // 👈 resetear página al filtrar
+    })),
 
   refetchClients: async () => {
     await Promise.all([get().fetchClients(true), get().fetchStats(true)]);

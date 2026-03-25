@@ -135,21 +135,25 @@ export class ClientController {
 
  static async getClients(req, res) {
   try {
-    const { search = "", status, plan } = req.query;
+    const { status, plan } = req.query;
+    const search = req.query.search || ""
+    const words = search.trim().split(/\s+/);
 
-    const query = search
-      ? {
-          $or: [
-            { name: { $regex: search, $options: "i" } },
-            { lastName: { $regex: search, $options: "i" } },
-            { dni: { $regex: search, $options: "i" } },
-            { email: { $regex: search, $options: "i" } },
-            { phone: { $regex: search, $options: "i" } },
-          ],
-        }
-      : {};
+    const query = { delete: false };
 
-    if (req.query.page && req.query.limit) {
+if (words.length) {
+  query.$and = words.map((word) => ({
+    $or: [
+      { name: { $regex: word, $options: "i" } },
+      { lastName: { $regex: word, $options: "i" } },
+      { dni: { $regex: word, $options: "i" } },
+      { email: { $regex: word, $options: "i" } },
+      { phone: { $regex: word, $options: "i" } }
+    ]
+  }));
+}
+
+    if (req.query.page && req.query.limit ) {
       const page = parseInt(req.query.page) || 1;
       const limit = parseInt(req.query.limit) || 10;
       const skip = (page - 1) * limit;
@@ -159,46 +163,43 @@ export class ClientController {
       // calcular daysLeft y status
       data = data.map((client) => {
         const daysLeft = getDaysLeft(client.membershipEnd);
-        let clientStatus = "active";
 
-        if (daysLeft === null) clientStatus = "no_membership";
-        else if (daysLeft < 0) clientStatus = "expired";
-        else if (daysLeft <= 3) clientStatus = "expiring_soon";
 
-        return { ...client.toObject(), daysLeft, clientStatus };
+        return { ...client.toObject(), daysLeft };
       });
 
       // filtrar por status si existe
       if (status) {
-        data = data.filter((c) => c.clientStatus === status);
+        data = data.filter((c) => c.status.toLowerCase().trim() === status.toLowerCase().trim());
       }
 
       // filtrar por plan si existe
       if (plan) {
-        data = data.filter((c) => c.plan?.name === plan);
+        data = data.filter((c) => c.plan?.name.toLowerCase().trim() === plan.toLowerCase().trim());
+        
       }
 
       const total = await Client.countDocuments({delete: false, ...query});
       const totalPages = Math.ceil(total / limit);
-
+      
       return res.status(200).json({ data, total, page, limit, totalPages });
     }
 
     // Si no hay paginación
-    let data = await ClientModel.getClients({ query });
+    let data = await ClientModel.getClients({ query, status });
     data = data.map((client) => {
       const daysLeft = getDaysLeft(client.membershipEnd);
-      let clientStatus = "active";
+      let clientStatus = "activo";
 
-      if (daysLeft === null) clientStatus = "no_membership";
-      else if (daysLeft < 0) clientStatus = "expired";
-      else if (daysLeft <= 3) clientStatus = "expiring_soon";
+      if (daysLeft === null) clientStatus = "sin_plan";
+      else if (daysLeft < 0) clientStatus = "vencido";
+      else if (daysLeft <= 3) clientStatus = "vence_pronto";
 
       return { ...client.toObject(), daysLeft, clientStatus };
     });
 
-    if (status) data = data.filter((c) => c.clientStatus === status);
-    if (plan) data = data.filter((c) => c.plan?.name === plan);
+    if (status) data = data.filter((c) => c.status.toLowerCase().trim() === status.toLowerCase().trim());
+    if (plan) data = data.filter((c) => c.plan?.name.toLowerCase().trim() === plan.toLowerCase().trim());
 
     const total = data.length;
 

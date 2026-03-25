@@ -1,5 +1,5 @@
 import { useClientStore } from "../store/useClientStore";
-import { UserPlus } from "lucide-react";
+import { UserPlus, ListFilter } from "lucide-react";
 import { StatCard } from "../components/StatCard";
 import { useEffect, useState } from "react";
 import { DataTable } from "../components/DataTable";
@@ -15,25 +15,39 @@ export default function Clients() {
   const totalPages = useClientStore((state) => state.totalPages);
   const fetchClients = useClientStore((state) => state.fetchClients);
   const fetchStats = useClientStore((state) => state.fetchStats);
+  const plans = usePlansStore((state) => state.plans);
+  const fetchPlans = usePlansStore((state) => state.fetchPlans);
   const deleteClient = useClientStore((state) => state.deleteClient);
   const totalClients = useClientStore((state) => state.totalClients);
   const activeClients = useClientStore((state) => state.activeClients);
   const expiredClients = useClientStore((state) => state.expiredClients);
+  const setFilters = useClientStore((state) => state.setFilters);
+  const filters = useClientStore((state) => state.filters);
+  const [showFilters, setShowFilters] = useState(false);
+  const [searchParams, setSearchParams] = useSearchParams();
+
   const expiringSoonClients = useClientStore(
     (state) => state.expiringSoonClients,
   );
   const newsThisMonthClients = useClientStore(
     (state) => state.newsThisMonthClients,
   );
-  const [searchParams] = useSearchParams();
-
+  const mostrarFiltros = () => {
+    setShowFilters(!showFilters);
+  };
   useEffect(() => {
     const pageParam = parseInt(searchParams.get("page")) || 1;
     const searchParam = searchParams.get("search") || "";
+    const statusParam = searchParams.get("status") || "";
+    const planParam = searchParams.get("plan") || "";
 
     useClientStore.setState({
       page: pageParam,
       search: searchParam,
+      filters: {
+        status: statusParam,
+        plan: planParam,
+      },
     });
     fetchClients();
   }, [searchParams]);
@@ -41,6 +55,20 @@ export default function Clients() {
   useEffect(() => {
     fetchStats();
   }, []);
+
+  useEffect(() => {
+    fetchPlans();
+  }, []);
+
+  useEffect(() => {
+    fetchClients();
+  }, [page, filters]);
+
+  const limpiarFiltros = () => {
+    setFilters({ status: "", plan: "" });
+    setSearchParams({});
+    setShowFilters(false);
+  };
 
   const navigate = useNavigate();
 
@@ -136,6 +164,73 @@ export default function Clients() {
           <p className="text-gray-500 text-sm font-normal">
             Aquí puedes ver todos los clientes registrados en el gimnasio.
           </p>
+        </div>
+        <div className="flex flex-row  gap-2">
+          <button
+            onClick={mostrarFiltros}
+            className="flex items-center justify-center gap-2 bg-white p-2 rounded-md border border-gray-200 w-30 shadow-xs font-semibold"
+          >
+            <ListFilter size={18} />
+            Filtros
+          </button>
+          {showFilters && (
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+              }}
+              className="flex flex-row gap-2 bg-white p-2 rounded-md border border-gray-200 shadow-sm text-gray-400 font-light"
+            >
+              <select
+                name="status"
+                id="status"
+                className=""
+                value={filters.status}
+                onChange={(e) => {
+                  const newStatus = e.target.value;
+
+                  setFilters({ status: newStatus });
+
+                  const params = new URLSearchParams(searchParams);
+                  params.set("status", newStatus);
+                  setSearchParams(params);
+                }}
+              >
+                <option value="">Estados</option>
+                <option value="activo">Activos</option>
+                <option value="sin_plan">Sin plan</option>
+                <option value="vence_pronto">Por vencer</option>
+                <option value="vencido">Vencidos</option>
+              </select>
+              <select
+                name="plan"
+                id="plan"
+                value={filters.plan}
+                onChange={(e) => {
+                  const newPlan = e.target.value;
+
+                  setFilters({ plan: newPlan });
+
+                  const params = new URLSearchParams(searchParams);
+                  params.set("plan", newPlan);
+                  setSearchParams(params);
+                }}
+              >
+                <option value="">Planes</option>
+                {plans.map((plan) => (
+                  <option key={plan._id} value={plan.name}>
+                    {plan.name}
+                  </option>
+                ))}
+              </select>
+              <button
+                type="submit"
+                className="bg-black text-white p-2 rounded-md"
+                onClick={limpiarFiltros}
+              >
+                Limpiar
+              </button>
+            </form>
+          )}
         </div>
         <button
           className="w-48 h-10 flex justify-center items-center align-center

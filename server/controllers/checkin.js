@@ -37,7 +37,7 @@ export class CheckinController {
 
     const deniedToday = await CheckinModel.findDeniedToday(client._id, startOfDay, endOfDay);
 
-    if (deniedToday) {
+    if (deniedToday && client.status !== "activo") {
       const populated = await deniedToday.populate("client plan");
 
       return res.status(403).json({

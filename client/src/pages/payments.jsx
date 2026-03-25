@@ -3,6 +3,7 @@ import { usePaymentStore } from "../store/usePaymentStore";
 import { useEffect } from "react";
 import { PaymentRegis } from "../components/PaymentRegis";
 import { History, BookOpenText } from "lucide-react";
+import { useSearchParams } from "react-router-dom";
 import api from "../api/axios";
 
 const opciones = {
@@ -15,9 +16,19 @@ const opciones = {
 export default function Payments() {
   const payments = usePaymentStore((state) => state.payments);
   const fetchPaymentsData = usePaymentStore((state) => state.fetchPaymentsData);
+  const page = usePaymentStore((state) => state.page);
+  const totalPages = usePaymentStore((state) => state.totalPages);
+  const [searchParams] = useSearchParams();
   useEffect(() => {
+    const pageParam = parseInt(searchParams.get("page")) || 1;
+    const searchParam = searchParams.get("search") || "";
+
+    usePaymentStore.setState({
+      page: pageParam,
+      search: searchParam,
+    });
     fetchPaymentsData();
-  }, [fetchPaymentsData]);
+  }, [searchParams]);
   return (
     <>
       <div className="flex flex-col p-6 pb-1 border-b border-gray-200">
@@ -56,6 +67,8 @@ export default function Payments() {
           <DataTable
             title="Historial de pagos"
             data={payments}
+            page={page}
+            totalPages={totalPages}
             fetchAllData={async () => {
               const res = await api.get("/payments"); // sin page/limit → todos
               return res.data.data || [];

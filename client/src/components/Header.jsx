@@ -26,7 +26,8 @@ export function Header() {
     if (timeoutRef.current) clearTimeout(timeoutRef.current);
 
     timeoutRef.current = setTimeout(() => {
-      const trimmedValue = value.trim().replace(/\s+/g, " "); 
+      const trimmedValue = value.trim().replace(/\s+/g, " ");
+
       const params = new URLSearchParams(searchParams);
       if (trimmedValue) {
         params.set("search", trimmedValue); // Usar el valor recortado y normalizado
@@ -38,23 +39,11 @@ export function Header() {
     }, 500);
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    const params = new URLSearchParams(searchParams);
-    if (input) {
-      params.set("search", encodeURIComponent(input)); // Codificar correctamente el valor
-    } else {
-      params.delete("search");
-    }
-    params.set("page", "1");
-    navigate(`/clients?${params.toString()}`);
-  };
-
   return (
     <header className="bg-white shadow-xs shadow-gray-200/50 border-b border-gray-200">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16">
-          <form onSubmit={handleSubmit} className="flex items-center">
+          <form className="flex items-center">
             <div className="relative">
               <Search
                 className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"

@@ -5,14 +5,14 @@ export class ClientModel {
     static async createClient(client) {
         return await Client.create(client)
     }
-    static async getClients({ skip, limit, query = {} } = {}) {
-        let mongoQuery = Client.find({ delete: false}, query)
+    static async getClients({ skip, limit, query = {}, status } = {}) {
+        let mongoQuery = Client.find(query)
             .populate("plan", "name")
             .sort({ createdAt: -1 });
 
         if (skip !== undefined) mongoQuery = mongoQuery.skip(skip);
         if (limit !== undefined) mongoQuery = mongoQuery.limit(limit);
-
+        if (status !== undefined) mongoQuery = mongoQuery.where("status").equals(status);
         return await mongoQuery;
     }
     static async getClientById(id) {
@@ -37,13 +37,13 @@ export class ClientModel {
         return await Client.countDocuments({ delete: false })
     }
     static async countActiveClients() {
-        return await Client.countDocuments({ delete: false, status: 'active' })
+        return await Client.countDocuments({ delete: false, status: 'activo' })
     }
     static async countExpiredClients() {
-        return await Client.countDocuments({ delete: false, status: 'expired' })
+        return await Client.countDocuments({ delete: false, status: { $in: ['vencido', 'sin_plan'] } })
     }
     static async getClientsExpiringSoon() {
-        return await Client.countDocuments({ delete: false, status: 'active', membershipEnd: { $lt: new Date(new Date().getTime() + 7 * 24 * 60 * 60 * 1000) } })
+        return await Client.countDocuments({ delete: false, status: 'vence_pronto' })
     }
     static async getClientsNewsThisMonth() {
         return await Client.countDocuments({ delete: false, createdAt: { $gte: new Date(new Date().getFullYear(), new Date().getMonth(), 1) } })
