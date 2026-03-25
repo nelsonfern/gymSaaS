@@ -5,7 +5,7 @@ const ACCEPTED_ORIGINS = [
     'http://localhost:3000', // React default o Postman
     'http://127.0.0.1:5173',
     'http://localhost:5100',
-    process.env.FRONTEND_URL // El domino final donde alojes tu frontend
+    process.env.CLIENT_URL // El domino final donde alojes tu frontend
 ].filter(Boolean);
 
 export const corsMiddleware = ({ acceptedOrigins = ACCEPTED_ORIGINS } = {}) => cors({

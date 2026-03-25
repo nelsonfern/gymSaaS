@@ -10,7 +10,7 @@ class DbClient {
         try {
             // Using direct cluster endpoints to bypass Node.js local DNS SRV "ECONNREFUSED" resolution issues on Windows
 
-            const queryString = `mongodb://${process.env.USER_DB}:${process.env.DB_PASSWORD}@${process.env.FALLBACK}/?tls=true&replicaSet=${process.env.REPLICA_SET}&authSource=admin&retryWrites=true&w=majority&appName=Gym`;
+            const queryString = `${process.env.MONGO_URI}`;
             await mongoose.connect(queryString, { dbName: 'GymSaaS' })
             console.log("Connected to MongoDB")
         } catch (e) {
