@@ -26,5 +26,11 @@ export class UserModel {
         return await User.findOneAndDelete({ _id: new mongoose.Types.ObjectId(id) })
 
     }
+    static async saveRefreshToken(id, token) {
+        return await User.findOneAndUpdate({ _id: new mongoose.Types.ObjectId(id) }, { $set: { refreshToken: token } }, { new: true, runValidators: true })
+    }
+    static async removeRefreshToken(id) {
+        return await User.findOneAndUpdate({ _id: new mongoose.Types.ObjectId(id) }, { $set: { refreshToken: null } }, { new: true, runValidators: true })
+    }
 }
 

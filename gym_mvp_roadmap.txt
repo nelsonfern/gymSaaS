@@ -22,7 +22,7 @@ Estas funcionalidades son bloqueantes. Un gimnasio real las necesita desde el d�
 - Fecha, monto, plan, método de cada pago
 - **Ya tenés** [getPaymentsByClient](file:///f:/proyecto/server/controllers/pago.js#119-127) en el backend — solo falta la UI
 
-### 3. Búsqueda y filtros en la tabla de clientes PROXIMO
+### 3. Búsqueda y filtros en la tabla de clientes HECHO
 **Por qué es crítico:** Con 200+ clientes, navegar sin filtros es imposible.
 - Filtrar por estado (activo / expirado / por vencer)
 - Filtrar por plan
@@ -62,7 +62,7 @@ Los gimnasios negocian precios constantemente. Un socio puede pagar $X en vez de
 - **Recepcionista / Staff:** puede hacer check-in y cobrar, NO puede borrar ni ver reportes financieros
 - **Entrenador:** solo ve sus clientes asignados (futuro)
 
-### 9. Check-in con historial visible PROXIMO
+### 9. Check-in con historial visible HECHO
 - Ver los últimos N check-ins en el dashboard
 - Historial de asistencia por cliente (¿cuántas veces vino este mes?)
 

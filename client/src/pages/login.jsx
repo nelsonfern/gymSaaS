@@ -16,7 +16,7 @@ export default function Login() {
     event.preventDefault();
     try {
       const response = await api.post("/users/login", { email, password });
-      login(response.data.token);
+      login(response.data.token, response.data.refreshToken);
       navigate("/");
     } catch (error) {
       const backendMessage = error.response?.data?.error;
@@ -25,7 +25,7 @@ export default function Login() {
   };
   return (
     <>
-      <div className="flex min-h-full flex-col justify-center px-6 py-12 lg:px-8 z-10 bg-linear-to-t from-gray-200 to-transparent">
+      <div className="flex min-h-full flex-col justify-center px-6 py-12 lg:px-8 z-10">
         <div className="sm:mx-auto sm:w-full sm:max-w-sm">
           <img
             alt="NefGym"

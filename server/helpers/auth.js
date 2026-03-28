@@ -4,7 +4,14 @@ import jwt from 'jsonwebtoken'
 export function generarToken(user) {
     return jwt.sign({ email: user.email, role: user.role, id: user._id },
         process.env.JWT_SECRET,
-        { expiresIn: '1h' })
+        { expiresIn: '15m' })
+}
+
+export function generarRefreshToken(user) {
+    return jwt.sign({id: user._id},
+        process.env.JWT_REFRESH_SECRET,
+        { expiresIn: '7d' }
+    )
 }
 
 export function verificarToken(req, res, next) {

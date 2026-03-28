@@ -1,30 +1,46 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useState, useEffect } from "react";
+import api from "../api/axios";
+const AuthContext = createContext();
 
-const AuthContext = createContext()
+export const AuthProvider = ({ children }) => {
+  const [auth, setAuth] = useState(null);
+  const [user, setUser] = useState(() => {
+    const token = localStorage.getItem("token");
+    return token ? { token } : null;
+  });
+  useEffect(() => {
+    const token = localStorage.getItem("accessToken");
 
-export const AuthProvider = ({ children}) => {
-    const [user, setUser] = useState(() => {
-        const token = localStorage.getItem("token")
-        return token ? { token } : null
-    })
-
-    const login = (token) =>{
-        localStorage.setItem("token", token)
-        setUser({token})
+    if (token) {
+      setAuth({ token });
     }
+  }, []);
+  const login = async (token, refreshToken) => {
+    localStorage.setItem("token", token);
+    localStorage.setItem("refreshToken", refreshToken);
+    setAuth({ token });
+    const res = await api.get("/users/profile");
+    setUser(res.data);
+  };
 
-    const logout = () => {
-        localStorage.removeItem("token")
-        setUser(null)
-    }
+  const logout = async () => {
+    try {
+      await api.post("/users/logout");
+    } catch (e) {}
 
-    const value = {
-        user,
-        login,
-        logout
-    }
+    localStorage.removeItem("token");
+    localStorage.removeItem("refreshToken");
 
-    return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
-}
+    setUser(null);
+  };
 
-export const useAuth = () => useContext(AuthContext)
+  const value = {
+    user,
+    login,
+    logout,
+  };
+
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+};
+
+export const useAuth = () => useContext(AuthContext);

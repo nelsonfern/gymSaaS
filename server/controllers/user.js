@@ -1,6 +1,6 @@
 import { UserModel } from "../models/user.js";
 import bcrypt from 'bcrypt'
-import { generarToken } from "../helpers/auth.js";
+import { generarToken, generarRefreshToken } from "../helpers/auth.js";
 
 export class UserController {
     constructor() { }
@@ -52,7 +52,9 @@ export class UserController {
             }
 
             const token = generarToken(userExist)
-            res.status(200).json({ message: "Login exitoso", token })
+            const refreshToken = generarRefreshToken(userExist)
+            await UserModel.saveRefreshToken(userExist._id, refreshToken)
+            res.status(200).json({ message: "Login exitoso", token, refreshToken })
 
         } catch (e) {
             console.error(e)
@@ -62,8 +64,8 @@ export class UserController {
 
     static async profile(req, res) {
         try {
-            const data = await UserModel.getUser({ email: req.emailConectado })
-
+            const data = await UserModel.getUserById(req.user.id)
+           
             if (!data) {
                 return res.status(404).json({ message: "Usuario no encontrado" })
             }
@@ -103,6 +105,44 @@ export class UserController {
             }
             console.error(e)
             res.status(500).json({ message: "Error interno del servidor" })
+        }
+    }
+    static async refreshToken(req, res) {
+        try {
+            const { refreshToken } = req.body
+
+            if (!refreshToken) {
+                return res.status(401).json({ message: "No autorizado" })
+            }
+
+            // Verificar token
+            const decoded = jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET)
+
+            const user = await UserModel.getUserById(decoded.id)
+
+            if (!user || user.refreshToken !== refreshToken) {
+                return res.status(403).json({ message: "Token inválido" })
+            }
+
+            const newAccessToken = generarToken(user)
+
+            res.json({ accessToken: newAccessToken })
+
+
+        } catch (error) {
+            return res.status(403).json({ message: "Token inválido o expirado" })
+        }
+    }
+    static async logout(req, res) {
+        try {
+            const userId = req.user.id
+
+            await UserModel.removeRefreshToken(userId)
+
+            res.json({ message: "Logout exitoso" })
+
+        } catch (e) {
+            res.status(500).json({ message: "Error interno" })
         }
     }
 }
