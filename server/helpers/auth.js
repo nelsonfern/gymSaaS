@@ -15,7 +15,10 @@ export function generarRefreshToken(user) {
 }
 
 export function verificarToken(req, res, next) {
-    const token = req.header('Authorization')?.replace('Bearer ', '')
+    // Primero intenta desde cookie httpOnly, fallback a header Bearer (Postman/dev)
+    const token = req.cookies?.access_token ||
+        req.header('Authorization')?.replace('Bearer ', '')
+
     if (!token) {
         return res.status(401).json({ error: 'Token requerido' })
     }
@@ -24,7 +27,7 @@ export function verificarToken(req, res, next) {
         req.user = decoded
         next()
     } catch (error) {
-        res.status(401).json({ error: 'Token no válido' })
+        res.status(401).json({ error: 'Token no válido o expirado' })
     }
 }
 

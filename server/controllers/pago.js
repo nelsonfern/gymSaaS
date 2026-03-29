@@ -7,7 +7,7 @@ export class PaymentController {
 
     static async createPayment(req, res) {
         try {
-            const { client, plan, amount, method } = req.body
+            const { client, plan, amount, method, note } = req.body
 
             if (!client || !plan || amount === undefined) {
                 return res.status(400).json({ message: "client, plan y amount son requeridos" })
@@ -23,11 +23,28 @@ export class PaymentController {
                 return res.status(404).json({ message: "Plan no encontrado" })
             }
 
-            if (amount !== planExists.price) {
-                return res.status(400).json({ message: "El monto no coincide con el precio del plan" })
+            const parsedAmount = Number(amount)
+            const originalPrice = planExists.price
+
+            if (parsedAmount <= 0) {
+                return res.status(400).json({ message: "El monto debe ser mayor a 0" })
             }
 
-            const payment = await PaymentModel.createPayment({ client, plan, amount, method })
+            if (parsedAmount > originalPrice) {
+                return res.status(400).json({ message: "El monto no puede ser mayor al precio del plan" })
+            }
+
+            const discount = originalPrice - parsedAmount
+
+            const payment = await PaymentModel.createPayment({
+                client,
+                plan,
+                amount: parsedAmount,
+                originalPrice,
+                discount,
+                note: note?.trim() || '',
+                method
+            })
 
             const now = new Date()
             let startDate = now
@@ -47,7 +64,6 @@ export class PaymentController {
                 membershipEnd: endDate,
                 status: 'activo'
             })
-           
 
             res.status(201).json(payment)
 

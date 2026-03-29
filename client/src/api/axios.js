@@ -2,15 +2,11 @@ import axios from "axios";
 
 const api = axios.create({
     baseURL: import.meta.env.VITE_API_URL,
-    withCredentials: true
+    withCredentials: true, // envía/recibe cookies en cada request
 });
-api.interceptors.request.use((config) => {  
-    const token = localStorage.getItem("token");
-    if (token) {
-        config.headers.Authorization = `Bearer ${token}`;
-    }
-    return config;
-});
+
+// Ya no inyectamos Authorization header — el token viaja en cookie httpOnly
+// Interceptor de respuesta: si el access_token expiró (401), intenta un refresh
 api.interceptors.response.use(
     (response) => response,
     async (error) => {
@@ -21,8 +17,11 @@ api.interceptors.response.use(
             return Promise.reject(error);
         }
 
-        // No interceptar login
-        if (originalRequest?.url?.includes('/login')) {
+        // No interceptar login ni refresh para evitar loops
+        if (
+            originalRequest?.url?.includes('/login') ||
+            originalRequest?.url?.includes('/refresh')
+        ) {
             return Promise.reject(error);
         }
 
@@ -30,32 +29,21 @@ api.interceptors.response.use(
             originalRequest._retry = true;
 
             try {
-                const refreshToken = localStorage.getItem("refreshToken");
-
-                const response = await axios.post(
-                    `${import.meta.env.VITE_API_URL}/refresh`,
-                    { refreshToken }
+                // El servidor lee el refresh_token desde su propia cookie httpOnly
+                await axios.post(
+                    `${import.meta.env.VITE_API_URL}/users/refresh`,
+                    {},
+                    { withCredentials: true }
                 );
 
-                const newAccessToken = response.data.token;
-
-                // Guardar nuevo token
-                localStorage.setItem("token", newAccessToken);
-
-                // Reintentar request original
-                originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
+                // El servidor renovó la cookie access_token — reintentamos
                 return api(originalRequest);
 
             } catch (refreshError) {
-                console.log("Refresh token inválido");
-
-                localStorage.removeItem("token");
-                localStorage.removeItem("refreshToken");
-
+                // Refresh falló (cookie expirada o inválida) → redirigir a login
                 if (window.location.pathname !== '/login') {
                     window.location.href = "/login";
                 }
-
                 return Promise.reject(refreshError);
             }
         }

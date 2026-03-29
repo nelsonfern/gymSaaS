@@ -8,6 +8,7 @@ export const usePaymentStore = create((set, get) => ({
   totalIncome: 0,
   paymentsLoaded: false,
   isLoading: false,
+  error: null,
   page: 1,
   totalPages: 1,
   limit: 7,
@@ -33,7 +34,7 @@ export const usePaymentStore = create((set, get) => ({
     }
   },
   fetchPaymentsData: async () => {
-    set({ isLoading: true });
+    set({ isLoading: true, error: null });
     try {
       const { page, limit, search } = get();
 
@@ -52,6 +53,7 @@ export const usePaymentStore = create((set, get) => ({
       });
     } catch (error) {
       console.error("Error cargando pagos:", error);
+      set({ error: "No se pudo cargar el historial de pagos. Intenta de nuevo." });
     } finally {
       set({ isLoading: false });
     }

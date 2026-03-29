@@ -30,6 +30,7 @@ export const useClientStore = create((set, get) => ({
     plan: "",
   },
   isLoading: false,
+  error: null,
   statsLoaded: false,
   lastFetchedParams: {
     page: null,
@@ -51,7 +52,7 @@ export const useClientStore = create((set, get) => ({
       return;
     }
 
-    set({ isLoading: true });
+    set({ isLoading: true, error: null });
 
     try {
       const res = await api.get(`/clients`, {
@@ -70,11 +71,12 @@ export const useClientStore = create((set, get) => ({
         lastFetchedParams: {
           page,
           search,
-          filters: { ...filters }, // 👈 importante
+          filters: { ...filters },
         },
       });
     } catch (error) {
       console.error("Error fetching clients:", error);
+      set({ error: "No se pudo cargar la lista de clientes. Intenta de nuevo." });
     } finally {
       set({ isLoading: false });
     }

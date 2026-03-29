@@ -23,6 +23,8 @@ export default function Clients() {
   const expiredClients = useClientStore((state) => state.expiredClients);
   const setFilters = useClientStore((state) => state.setFilters);
   const filters = useClientStore((state) => state.filters);
+  const isLoading = useClientStore((state) => state.isLoading);
+  const clientError = useClientStore((state) => state.error);
   const [showFilters, setShowFilters] = useState(false);
   const [searchParams, setSearchParams] = useSearchParams();
 
@@ -192,6 +194,7 @@ export default function Clients() {
 
                   const params = new URLSearchParams(searchParams);
                   params.set("status", newStatus);
+                  params.set("page", "1"); // resetear paginación al filtrar
                   setSearchParams(params);
                 }}
               >
@@ -212,12 +215,13 @@ export default function Clients() {
 
                   const params = new URLSearchParams(searchParams);
                   params.set("plan", newPlan);
+                  params.set("page", "1"); // resetear paginación al filtrar
                   setSearchParams(params);
                 }}
               >
                 <option value="">Planes</option>
                 {plans.map((plan) => (
-                  <option key={plan._id} value={plan.name}>
+                  <option key={plan._id} value={plan._id}>
                     {plan.name}
                   </option>
                 ))}
@@ -293,8 +297,10 @@ export default function Clients() {
         onEdit={(client) => openSlide(client)}
         onDelete={(_id) => deleteClient(_id)}
         columns={columns}
+        isLoading={isLoading}
+        error={clientError}
         fetchAllData={async () => {
-          const res = await api.get("/clients"); // sin page/limit → devuelve todos
+          const res = await api.get("/clients");
           return res.data.data || [];
         }}
       />

@@ -137,75 +137,69 @@ export class ClientController {
   try {
     const { status, plan } = req.query;
     const search = req.query.search || ""
-    const words = search.trim().split(/\s+/);
+    const words = search.trim().split(/\s+/).filter(Boolean);
 
+    // Query base
     const query = { delete: false };
 
-if (words.length) {
-  query.$and = words.map((word) => ({
-    $or: [
-      { name: { $regex: word, $options: "i" } },
-      { lastName: { $regex: word, $options: "i" } },
-      { dni: { $regex: word, $options: "i" } },
-      { email: { $regex: word, $options: "i" } },
-      { phone: { $regex: word, $options: "i" } }
-    ]
-  }));
-}
+    // Filtro de búsqueda por texto (nombre, apellido, dni, email, teléfono)
+    if (words.length) {
+      query.$and = words.map((word) => ({
+        $or: [
+          { name: { $regex: word, $options: "i" } },
+          { lastName: { $regex: word, $options: "i" } },
+          { dni: { $regex: word, $options: "i" } },
+          { email: { $regex: word, $options: "i" } },
+          { phone: { $regex: word, $options: "i" } }
+        ]
+      }));
+    }
 
-    if (req.query.page && req.query.limit ) {
+    // Filtro de status directamente en la query de Mongo
+    if (status) {
+      query.status = status.toLowerCase().trim();
+    }
+
+    // Filtro de plan por ObjectId directamente en la query de Mongo
+    if (plan) {
+      query.plan = plan; // el frontend ahora envía plan._id
+    }
+
+    if (req.query.page && req.query.limit) {
       const page = parseInt(req.query.page) || 1;
       const limit = parseInt(req.query.limit) || 10;
-      const skip = (page - 1) * limit;
+
+      // El total y totalPages se calculan sobre el conjunto YA filtrado
+      const total = await Client.countDocuments(query);
+      const totalPages = Math.ceil(total / limit) || 1;
+
+      // Ajustar page si la URL trae una página que ya no existe con el filtro
+      const safePage = Math.min(page, totalPages);
+      const skip = (safePage - 1) * limit;
 
       let data = await ClientModel.getClients({ skip, limit, query });
 
-      // calcular daysLeft y status
+      // Calcular daysLeft en JS (no está en Mongo)
       data = data.map((client) => {
         const daysLeft = getDaysLeft(client.membershipEnd);
-
-
         return { ...client.toObject(), daysLeft };
       });
 
-      // filtrar por status si existe
-      if (status) {
-        data = data.filter((c) => c.status.toLowerCase().trim() === status.toLowerCase().trim());
-      }
-
-      // filtrar por plan si existe
-      if (plan) {
-        data = data.filter((c) => c.plan?.name.toLowerCase().trim() === plan.toLowerCase().trim());
-        
-      }
-
-      const total = await Client.countDocuments({delete: false, ...query});
-      const totalPages = Math.ceil(total / limit);
-      
-      return res.status(200).json({ data, total, page, limit, totalPages });
+      return res.status(200).json({ data, total, page: safePage, limit, totalPages });
     }
 
-    // Si no hay paginación
-    let data = await ClientModel.getClients({ query, status });
+    // Sin paginación: devuelve todo (para Export Excel)
+    let data = await ClientModel.getClients({ query });
     data = data.map((client) => {
       const daysLeft = getDaysLeft(client.membershipEnd);
-      let clientStatus = "activo";
-
-      if (daysLeft === null) clientStatus = "sin_plan";
-      else if (daysLeft < 0) clientStatus = "vencido";
-      else if (daysLeft <= 3) clientStatus = "vence_pronto";
-
-      return { ...client.toObject(), daysLeft, clientStatus };
+      return { ...client.toObject(), daysLeft };
     });
 
-    if (status) data = data.filter((c) => c.status.toLowerCase().trim() === status.toLowerCase().trim());
-    if (plan) data = data.filter((c) => c.plan?.name.toLowerCase().trim() === plan.toLowerCase().trim());
-
-    const total = data.length;
 
     return res
       .status(200)
-      .json({ data, total, page: 1, limit: total, totalPages: 1 });
+      .json({ data, total: data.length, page: 1, limit: data.length, totalPages: 1 });
+
   } catch (e) {
     console.error(e);
     res.status(500).json({ message: "Error interno del servidor" });

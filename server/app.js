@@ -4,6 +4,7 @@ import { corsMiddleware } from './helpers/cors.js'
 import helmet from 'helmet'
 import rateLimit from 'express-rate-limit'
 import mongoSanitize from '@exortek/express-mongo-sanitize'
+import cookieParser from 'cookie-parser'
 
 import { clientRoutes } from './routes/client.js'
 import DbClient from './config/dbClient.js'
@@ -20,6 +21,9 @@ app.use(helmet())
 
 // CORS configurado dinámicamente desde /helpers
 app.use(corsMiddleware())
+
+// Parsear cookies (necesario para leer access_token y refresh_token httpOnly)
+app.use(cookieParser())
 
 // Limita el JSON subido a máx 10kb (mitiga ataques DOS de payload grande)
 app.use(express.json({ limit: '10kb' }))

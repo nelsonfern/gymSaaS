@@ -18,6 +18,8 @@ export default function Payments() {
   const fetchPaymentsData = usePaymentStore((state) => state.fetchPaymentsData);
   const page = usePaymentStore((state) => state.page);
   const totalPages = usePaymentStore((state) => state.totalPages);
+  const isLoading = usePaymentStore((state) => state.isLoading);
+  const paymentError = usePaymentStore((state) => state.error);
   const [searchParams] = useSearchParams();
   useEffect(() => {
     const pageParam = parseInt(searchParams.get("page")) || 1;
@@ -69,8 +71,10 @@ export default function Payments() {
             data={payments}
             page={page}
             totalPages={totalPages}
+            isLoading={isLoading}
+            error={paymentError}
             fetchAllData={async () => {
-              const res = await api.get("/payments"); // sin page/limit → todos
+              const res = await api.get("/payments");
               return res.data.data || [];
             }}
             columns={[

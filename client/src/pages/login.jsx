@@ -1,5 +1,4 @@
 import { useState } from "react";
-import api from "../api/axios";
 import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { Mail, Lock, Eye, EyeOff } from "lucide-react";
@@ -15,12 +14,14 @@ export default function Login() {
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
-      const response = await api.post("/users/login", { email, password });
-      login(response.data.token, response.data.refreshToken);
+      await login(email, password);
       navigate("/");
     } catch (error) {
-      const backendMessage = error.response?.data?.error;
-      toast.error(backendMessage || "Error inesperado al iniciar sesión");
+      const msg =
+        error.response?.data?.message ||
+        error.response?.data?.error ||
+        "Error inesperado al iniciar sesión";
+      toast.error(msg);
     }
   };
   return (

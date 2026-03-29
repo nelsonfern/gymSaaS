@@ -1,6 +1,25 @@
 import { UserModel } from "../models/user.js";
 import bcrypt from 'bcrypt'
 import { generarToken, generarRefreshToken } from "../helpers/auth.js";
+import jwt from 'jsonwebtoken'
+import 'dotenv/config'
+
+// Opciones compartidas para las cookies de tokens
+const ACCESS_COOKIE_OPTIONS = {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: process.env.NODE_ENV === 'production' ? 'strict' : 'lax',
+    maxAge: 15 * 60 * 1000, // 15 minutos
+    path: '/'
+}
+
+const REFRESH_COOKIE_OPTIONS = {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: process.env.NODE_ENV === 'production' ? 'strict' : 'lax',
+    maxAge: 7 * 24 * 60 * 60 * 1000, // 7 días
+    path: '/'
+}
 
 export class UserController {
     constructor() { }
@@ -51,10 +70,25 @@ export class UserController {
                 return res.status(401).json({ message: "Contraseña incorrecta" })
             }
 
-            const token = generarToken(userExist)
+            const accessToken = generarToken(userExist)
             const refreshToken = generarRefreshToken(userExist)
+
             await UserModel.saveRefreshToken(userExist._id, refreshToken)
-            res.status(200).json({ message: "Login exitoso", token, refreshToken })
+
+            // Setear ambos tokens como cookies httpOnly
+            res.cookie('access_token', accessToken, ACCESS_COOKIE_OPTIONS)
+            res.cookie('refresh_token', refreshToken, REFRESH_COOKIE_OPTIONS)
+
+            // Devolver datos del usuario (sin tokens en body)
+            res.status(200).json({
+                message: "Login exitoso",
+                user: {
+                    id: userExist._id,
+                    name: userExist.name,
+                    email: userExist.email,
+                    role: userExist.role,
+                }
+            })
 
         } catch (e) {
             console.error(e)
@@ -65,12 +99,17 @@ export class UserController {
     static async profile(req, res) {
         try {
             const data = await UserModel.getUserById(req.user.id)
-           
+
             if (!data) {
                 return res.status(404).json({ message: "Usuario no encontrado" })
             }
 
-            res.status(200).json(data)
+            res.status(200).json({
+                id: data._id,
+                name: data.name,
+                email: data.email,
+                role: data.role,
+            })
 
         } catch (e) {
             console.error(e)
@@ -107,15 +146,16 @@ export class UserController {
             res.status(500).json({ message: "Error interno del servidor" })
         }
     }
+
     static async refreshToken(req, res) {
         try {
-            const { refreshToken } = req.body
+            // Leer refresh token desde cookie (o body como fallback para Postman)
+            const refreshToken = req.cookies?.refresh_token || req.body?.refreshToken
 
             if (!refreshToken) {
-                return res.status(401).json({ message: "No autorizado" })
+                return res.status(401).json({ message: "Refresh token requerido" })
             }
 
-            // Verificar token
             const decoded = jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET)
 
             const user = await UserModel.getUserById(decoded.id)
@@ -126,18 +166,25 @@ export class UserController {
 
             const newAccessToken = generarToken(user)
 
-            res.json({ accessToken: newAccessToken })
+            // Rotar también el access token en cookie
+            res.cookie('access_token', newAccessToken, ACCESS_COOKIE_OPTIONS)
 
+            res.json({ message: "Token renovado" })
 
         } catch (error) {
             return res.status(403).json({ message: "Token inválido o expirado" })
         }
     }
+
     static async logout(req, res) {
         try {
             const userId = req.user.id
 
             await UserModel.removeRefreshToken(userId)
+
+            // Limpiar ambas cookies
+            res.clearCookie('access_token', { path: '/' })
+            res.clearCookie('refresh_token', { path: '/' })
 
             res.json({ message: "Logout exitoso" })
 

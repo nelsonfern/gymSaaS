@@ -18,6 +18,21 @@ const paymentSchema = new mongoose.Schema({
         required: true
     },
 
+    originalPrice: {
+        type: Number,
+        required: true
+    },
+
+    discount: {
+        type: Number,
+        default: 0
+    },
+
+    note: {
+        type: String,
+        default: ''
+    },
+
     paymentDate: {
         type: Date,
         default: Date.now
