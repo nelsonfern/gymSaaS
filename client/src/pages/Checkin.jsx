@@ -62,7 +62,7 @@ export default function Checkin() {
         setShowBox(false);
         setCheckinResult(null);
         setIsLoading(false);
-      }, 4000);
+      }, 60000); // 1 minuto
     }
 
     setDni("");
