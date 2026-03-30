@@ -5,18 +5,20 @@ import jwt from 'jsonwebtoken'
 import 'dotenv/config'
 
 // Opciones compartidas para las cookies de tokens
+const isProd = process.env.NODE_ENV === 'production'
+
 const ACCESS_COOKIE_OPTIONS = {
     httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
-    sameSite: process.env.NODE_ENV === 'production' ? 'strict' : 'lax',
+    secure: isProd,
+    sameSite: isProd ? 'none' : 'lax',
     maxAge: 15 * 60 * 1000, // 15 minutos
     path: '/'
 }
 
 const REFRESH_COOKIE_OPTIONS = {
     httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
-    sameSite: process.env.NODE_ENV === 'production' ? 'strict' : 'lax',
+    secure: isProd,
+    sameSite: isProd ? 'none' : 'lax',
     maxAge: 7 * 24 * 60 * 60 * 1000, // 7 días
     path: '/'
 }
@@ -183,8 +185,8 @@ export class UserController {
             await UserModel.removeRefreshToken(userId)
 
             // Limpiar ambas cookies
-            res.clearCookie('access_token', { path: '/' })
-            res.clearCookie('refresh_token', { path: '/' })
+            res.clearCookie('access_token', { path: '/', sameSite: isProd ? 'none' : 'lax', secure: isProd })
+            res.clearCookie('refresh_token', { path: '/', sameSite: isProd ? 'none' : 'lax', secure: isProd })
 
             res.json({ message: "Logout exitoso" })
 
