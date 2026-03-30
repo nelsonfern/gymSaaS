@@ -32,5 +32,8 @@ export class UserModel {
     static async removeRefreshToken(id) {
         return await User.findOneAndUpdate({ _id: new mongoose.Types.ObjectId(id) }, { $set: { refreshToken: null } }, { new: true, runValidators: true })
     }
+    static async getStaff() {
+        return await User.find({ role: "staff" })
+    }
 }
 

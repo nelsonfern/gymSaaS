@@ -1,18 +1,30 @@
-export function StatCard ({title, value, icon, color, subtitle, textColor, titleColor, bgColor}) {
-    return (
-        <div className={`${bgColor || "bg-white"} rounded-xl shadow-xs shadow-gray-200/50 border-b border-gray-200 p-4`}>
-            <div className="flex items-center justify-between w-full">
-                <div className="w-full">
-                    <h3 className={` text-sm font-medium ${titleColor || "text-gray-800"}`}>{title}</h3>
-                    <p className={` pt-2 text-2xl font-bold ${textColor || "text-gray-800"}`}>{value}</p>
-                </div>
-                {icon && (
-                    <div className={`ml-2 p-2 rounded-lg ${color}`}>
-                        {icon}
-                    </div>
-                )}
-            </div>
-            <p className="text-sm text-gray-500 mt-2">{subtitle}</p>
+export function StatCard({ title, value, icon, color, subtitle, textColor, titleColor, bgColor }) {
+  return (
+    <div className={`relative overflow-hidden ${bgColor || "bg-white"} rounded-2xl p-5 border border-gray-100/60 shadow-[0_2px_10px_-3px_rgba(6,81,237,0.08)] flex flex-col justify-between`}>
+      <div className="flex items-start justify-between">
+        <div className="flex flex-col gap-1">
+          <h3 className={`text-xs uppercase tracking-wide font-semibold ${titleColor || "text-gray-500"}`}>
+            {title}
+          </h3>
+          <p className={`text-2xl font-bold tracking-tight ${textColor || "text-gray-900"}`}>
+            {value}
+          </p>
         </div>
-    )
+        
+        {icon && (
+          <div className={`flex items-center justify-center w-10 h-10 rounded-xl ${color}`}>
+            {icon}
+          </div>
+        )}
+      </div>
+      
+      {subtitle && (
+        <div className="mt-4 flex items-center gap-1.5">
+          <span className="text-xs font-medium text-gray-400">
+            {subtitle}
+          </span>
+        </div>
+      )}
+    </div>
+  );
 }

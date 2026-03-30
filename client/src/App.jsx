@@ -9,6 +9,8 @@ import Plans from "./pages/plans";
 import Payments from "./pages/payments";
 import ClientProfile from "./pages/ClientProfile";
 import Checkin from "./pages/Checkin";
+import Reports from "./pages/Reports";
+import Settings from "./pages/Settings";
 function App() {
   return (
     <>
@@ -71,6 +73,26 @@ function App() {
             element={
               <ProtectedRoutes>
                 <Checkin />
+              </ProtectedRoutes>
+            }
+          />
+          <Route
+            path="/reports"
+            element={
+              <ProtectedRoutes>
+                <Layout>
+                  <Reports />
+                </Layout>
+              </ProtectedRoutes>
+            }
+          />
+          <Route
+            path="/settings"
+            element={
+              <ProtectedRoutes>
+                <Layout>
+                  <Settings />
+                </Layout>
               </ProtectedRoutes>
             }
           />

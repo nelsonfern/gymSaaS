@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { Link } from "./Link";
 import { useClientStore } from "../store/useClientStore";
 import {
@@ -6,22 +7,34 @@ import {
   NotepadText,
   Wallet,
   DoorOpen,
+  ChartBar,
 } from "lucide-react";
+import { useAuth } from "../context/AuthContext";
+import { useSettingsStore } from "../store/useSettingsStore";
 
 export function Sidebar() {
   const openSlide = useClientStore((state) => state.openSlide);
+  const { user } = useAuth();
+  const { settings, fetchSettings } = useSettingsStore();
+
+  useEffect(() => {
+    fetchSettings();
+  }, [fetchSettings]);
+
   return (
     <aside className="relative flex flex-col shrink-0 bg-white shadow-xs shadow-gray-200/50 border-r border-gray-200 h-screen p-4 w-48">
       <div className="flex items-center mb-6">
         <img
-          src="/dumbbell-gym-svgrepo-com.svg"
-          alt=""
-          className="h-12 w-auto mr-2"
+          src={settings?.logoUrl?.startsWith("/uploads") ? `${import.meta.env.VITE_API_URL}${settings.logoUrl}` : settings?.logoUrl || "/dumbbell-gym-svgrepo-com.svg"}
+          alt="Logo"
+          className="h-12 w-auto mr-2 rounded-md object-contain"
         />
         <Link to="/" className="flex flex-col">
-          <h2 className="font-bold text-2xl text-gray-700">NefGym </h2>
+          <h2 className="font-bold text-xl text-gray-700">
+            {settings?.gymName || "Cargando..."}
+          </h2>
           <span className="text-gray-500 text-xs font-light">
-            Nombre del gimnasio
+            NefGym - Gym Management
           </span>
         </Link>
       </div>
@@ -63,6 +76,15 @@ export function Sidebar() {
           <DoorOpen color="var(--color-gray-500)" size={18} />{" "}
           <span className="text-gray-500 text-sm font-normal">Check-in</span>
         </Link>
+        {user.role === "admin" && (
+          <Link
+            to="/reports"
+            className="flex items-center gap-2 p-2 rounded-lg hover:bg-gray-100"
+          >
+            <ChartBar color="var(--color-gray-500)" size={18} />{" "}
+            <span className="text-gray-500 text-sm font-normal">Reportes</span>
+          </Link>
+        )}
       </nav>
       <div className="mt-auto p-2">
         <button

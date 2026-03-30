@@ -8,7 +8,7 @@ export function Layout({ children }) {
   const slideMode = useClientStore((state) => state.slideMode);
 
   return (
-    <div className="flex h-screen bg-gray-100">
+    <div className="flex h-screen">
       {/* Sidebar */}
       <Sidebar />
 

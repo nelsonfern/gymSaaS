@@ -26,6 +26,9 @@ export function AddClientSlideOver() {
     const formData = new FormData(e.target);
     const data = Object.fromEntries(formData);
 
+    // 2. Convertir checkbox a boolean (si está marcado llega como "true", si no como null)
+    data.allowEmail = formData.get("allowEmail") === "true";
+
     // Validación de Formato de Email
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(data.email)) {
@@ -196,6 +199,27 @@ export function AddClientSlideOver() {
                           className="p-1.5 bg-white block w-full rounded-md border-0 py-1.5 text-gray-500  ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                         />
                       </div>
+                    </div>
+                    <div className="sm:col-span-6">
+                      <div className="flex items-center gap-3 mt-2">
+                        <input
+                          type="checkbox"
+                          name="allowEmail"
+                          id="allowEmail"
+                          value="true"
+                          className="h-6 w-6 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600"
+                        />
+                        <label
+                          htmlFor="allowEmail"
+                          className="text-sm font-medium text-gray-600"
+                        >
+                          Permitir envío de correos automáticos
+                        </label>
+                      </div>
+                      <p className="text-xs  text-gray-400 mt-1">
+                        Recibirá notificaciones de pagos, vencimientos y avisos
+                        importantes.
+                      </p>
                     </div>
                   </div>
                 </div>

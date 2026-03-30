@@ -13,8 +13,13 @@ import { planRoutes } from './routes/plan.js'
 import { paymentsRouter } from './routes/pagos.js'
 import { checkinRoutes } from './routes/checkin.js'
 import { startMembershipJob } from './jobs/membershipJob.js'
+import { settingsRoutes } from './routes/settings.js'
+import { uploadRoutes } from './routes/upload.js'
 
 const app = express()
+
+// Servir la carpeta uploads como archivos estáticos
+app.use('/uploads', express.static('public/uploads'))
 
 // Seguridad HTTP
 app.use(helmet())
@@ -56,6 +61,8 @@ app.use('/users', userRoutes)
 app.use('/plans', planRoutes)
 app.use('/payments', paymentsRouter)
 app.use('/checkins', checkinRoutes)
+app.use('/settings', settingsRoutes)
+app.use('/upload', uploadRoutes)
 startMembershipJob()
 try {
     const PORT = process.env.PORT || 3000

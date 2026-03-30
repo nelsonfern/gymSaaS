@@ -34,3 +34,4 @@ paymentsRouter.get(
     PaymentController.getPaymentsByClient
 )
 
+paymentsRouter.get("/analytics", verificarToken, authorize(["admin", "staff"]), PaymentController.getPaymentAnalytics)

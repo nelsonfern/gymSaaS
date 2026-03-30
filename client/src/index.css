@@ -17,6 +17,7 @@ h1, h2, h3, h4, h5, h6 {
     font-family: 'Inter', sans-serif;
   }
 body {
-  /*el background como un degra*/
+  /*el background como un degradado*/
   background-color: #F3F4F6;
+  background-image: linear-gradient(to bottom, #F3F4F6, #eaecf0);
 }

@@ -1,9 +1,16 @@
-import { Download, Trash, Pencil, Loader2, AlertCircle, InboxIcon } from "lucide-react";
+import {
+  Download,
+  Trash,
+  Pencil,
+  Loader2,
+  AlertCircle,
+  InboxIcon,
+} from "lucide-react";
 import { useSearchParams } from "react-router-dom";
 import { useState } from "react";
 import { PopUpDelete } from "./PopUpDelete";
 import * as XLSX from "xlsx";
-
+import { useAuth } from "../context/AuthContext";
 // ─── Skeleton row ────────────────────────────────────────────────
 function SkeletonRow({ cols, hasActions }) {
   return (
@@ -11,7 +18,9 @@ function SkeletonRow({ cols, hasActions }) {
       {Array.from({ length: cols }).map((_, i) => (
         <td key={i} className="py-4 px-3">
           <div className="h-3.5 bg-gray-200 rounded-full w-3/4" />
-          {i === 0 && <div className="h-2.5 bg-gray-100 rounded-full w-1/2 mt-2" />}
+          {i === 0 && (
+            <div className="h-2.5 bg-gray-100 rounded-full w-1/2 mt-2" />
+          )}
         </td>
       ))}
       {hasActions && (
@@ -35,13 +44,13 @@ export function DataTable({
   onEdit,
   onDelete,
   fetchAllData,
-  isLoading = false,  // ← nuevo prop
-  error = null,       // ← nuevo prop
+  isLoading = false, // ← nuevo prop
+  error = null, // ← nuevo prop
 }) {
   const [searchParams, setSearchParams] = useSearchParams();
   const hasActions = onEdit || onDelete;
   const [popUp, setPopUp] = useState({ show: false, id: null });
-
+  const { user } = useAuth();
   const handlePageChange = (newPage) => {
     const params = new URLSearchParams(searchParams);
     params.set("page", newPage);
@@ -94,7 +103,10 @@ export function DataTable({
       const worksheet = XLSX.utils.json_to_sheet(allExcelData);
       const workbook = XLSX.utils.book_new();
       XLSX.utils.book_append_sheet(workbook, worksheet, title || "Export");
-      XLSX.writeFile(workbook, `${title || "export"}-${new Date().toLocaleString("es-ES")}.xlsx`);
+      XLSX.writeFile(
+        workbook,
+        `${title || "export"}-${new Date().toLocaleString("es-ES")}.xlsx`,
+      );
     } finally {
       setExporting(false);
     }
@@ -136,7 +148,9 @@ export function DataTable({
         <thead>
           <tr className="text-gray-800 text-xs border-b border-gray-200 font-light">
             {columns.map((col, i) => (
-              <th key={i} className="text-left p-3">{col.header}</th>
+              <th key={i} className="text-left p-3">
+                {col.header}
+              </th>
             ))}
             {hasActions && <th className="font-inter text-right">ACCIONES</th>}
           </tr>
@@ -146,12 +160,21 @@ export function DataTable({
           {/* SKELETON mientras carga */}
           {isLoading
             ? Array.from({ length: 5 }).map((_, i) => (
-                <SkeletonRow key={i} cols={columns.length} hasActions={hasActions} />
+                <SkeletonRow
+                  key={i}
+                  cols={columns.length}
+                  hasActions={hasActions}
+                />
               ))
             : data.map((item, i) => (
-                <tr key={i} className="border-b border-gray-50 hover:bg-gray-50/50 transition-colors">
+                <tr
+                  key={i}
+                  className="border-b border-gray-50 hover:bg-gray-50/50 transition-colors"
+                >
                   {columns.map((col, j) => (
-                    <td key={j} className="py-4 px-1">{col.render(item)}</td>
+                    <td key={j} className="py-4 px-1">
+                      {col.render(item)}
+                    </td>
                   ))}
                   {/* ACTIONS */}
                   {hasActions && (
@@ -164,7 +187,7 @@ export function DataTable({
                           <Pencil size={18} />
                         </button>
                       )}
-                      {onDelete && (
+                      {user.role === "admin" && onDelete && (
                         <button
                           onClick={() => handleDelete(item._id)}
                           className="text-red-500 hover:bg-red-400 hover:text-white rounded-full p-1"
@@ -196,27 +219,35 @@ export function DataTable({
 
       {/* FOOTER paginación */}
       <div className="flex justify-between items-center mt-4 text-sm text-gray-400">
-        <p>Pagina {page} de {totalPages}</p>
+        <p>
+          Pagina {page} de {totalPages}
+        </p>
         <div className="flex items-center gap-2">
           <button
             className={`px-3 py-1 rounded-lg ${page === 1 ? "text-gray-300 cursor-not-allowed" : "hover:bg-gray-100"}`}
             onClick={() => page > 1 && handlePageChange(page - 1)}
             disabled={page === 1}
-          >{"<"}</button>
+          >
+            {"<"}
+          </button>
 
           {Array.from({ length: totalPages }, (_, i) => (
             <button
               key={i}
               className={`px-3 py-1 rounded-lg ${page === i + 1 ? "bg-blue-500 text-white" : "hover:bg-gray-100"}`}
               onClick={() => handlePageChange(i + 1)}
-            >{i + 1}</button>
+            >
+              {i + 1}
+            </button>
           ))}
 
           <button
             className={`px-3 py-1 rounded-lg ${page >= totalPages ? "text-gray-300 cursor-not-allowed" : "hover:bg-gray-100"}`}
             onClick={() => page < totalPages && handlePageChange(page + 1)}
             disabled={page >= totalPages}
-          >{">"}</button>
+          >
+            {">"}
+          </button>
         </div>
       </div>
     </div>

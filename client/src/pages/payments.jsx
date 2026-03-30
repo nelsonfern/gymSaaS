@@ -83,50 +83,65 @@ export default function Payments() {
                 csvValue: (p) =>
                   `${p.client?.name ?? ""} ${p.client?.lastName ?? ""}`.trim(),
                 render: (p) => (
-                  <p className="font-normal text-gray-600 text-sm">
+                  <p className="font-medium text-gray-700 text-sm">
                     {p.client?.name + " " + p.client?.lastName}
                   </p>
                 ),
               },
               {
-                header: "PLAN",
-                csvValue: (p) => p.plan?.name ?? "",
+                header: "DESCRIPCIÓN",
+                csvValue: (p) => {
+                  const planName = p.plan?.name ?? "Sin plan";
+                  return p.note ? `${planName} - ${p.note}` : planName;
+                },
                 render: (p) => (
-                  <div className="flex items-center">
-                    {" "}
-                    <p className="font-semibold text-indigo-600 text-sm bg-indigo-100 p-2 rounded-md">
-                      {p.plan.name}
-                    </p>
+                  <div className="flex items-center gap-2">
+                    <span className="w-1.5 h-1.5 rounded-full bg-indigo-400 shrink-0" />
+                    <div>
+                      <p className="font-medium text-gray-700 text-sm">{p.plan?.name ?? "—"}</p>
+                      {p.note && (
+                        <p className="text-xs text-gray-400 font-normal">
+                          {p.note}
+                        </p>
+                      )}
+                    </div>
                   </div>
-                ),
-              },
-              {
-                header: "MONTO",
-                key: "amount",
-                render: (p) => (
-                  <p className="font-semibold text-gray-400 text-sm">
-                    ${p.amount}
-                  </p>
                 ),
               },
               {
                 header: "FECHA",
                 csvValue: (p) =>
-                  new Date(p.createdAt).toLocaleString("es-ES", opciones),
+                  new Date(p.createdAt).toLocaleDateString([], opciones),
                 render: (p) => (
-                  <p className="font-semibold text-gray-400 text-sm">
-                    {new Date(p.createdAt).toLocaleString("es-ES", opciones)}
+                  <p className="text-gray-400 text-sm font-medium">
+                    {new Date(p.createdAt).toLocaleDateString([], opciones)}
                   </p>
                 ),
               },
               {
                 header: "MÉTODO",
                 key: "method",
+                csvValue: (p) => p.method.charAt(0).toUpperCase() + p.method.slice(1).toLowerCase(),
                 render: (p) => (
-                  <div className="flex items-center">
-                    <p className="font-semibold text-gray-400 text-sm bg-gray-100 p-2 rounded-md">
-                      {p.method.toUpperCase()}
+                  <span className="text-xs font-medium bg-gray-100 text-gray-500 px-2 py-1 rounded-md inline-block">
+                    {p.method.charAt(0).toUpperCase() + p.method.slice(1).toLowerCase()}
+                  </span>
+                ),
+              },
+              {
+                header: "MONTO",
+                key: "amount",
+                csvValue: (p) => p.discount > 0 ? `$${p.amount} (Desc: -$${p.discount})` : `$${p.amount}`,
+                render: (p) => (
+                  <div className="text-right pr-4">
+                    <p className="font-semibold text-gray-700 text-sm">
+                      ${p.amount}
                     </p>
+                    {p.discount > 0 && (
+                      <p className="text-xs text-amber-500 font-medium">
+                        -${p.discount.toFixed(2)} desc.
+                      </p>
+                    )}
                   </div>
                 ),
               },

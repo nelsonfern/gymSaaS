@@ -6,6 +6,11 @@ import { useEffect, useState } from "react";
 import { useClientStore } from "../store/useClientStore";
 import { usePaymentStore } from "../store/usePaymentStore";
 import { useCheckinStore } from "../store/useCheckinStore";
+import { useAnalyticsStore } from "../store/useAnalyticsStore";
+import { TrendingUp, TrendingDown, Calendar, DollarSign } from "lucide-react";
+
+// Formato moneda simple
+const formatCurrency = (value) => `$${Number(value).toLocaleString("es-AR")}`;
 
 function StatSkeleton() {
   return (
@@ -43,8 +48,10 @@ export default function Dashboard() {
   const fetchStats = useClientStore((state) => state.fetchStats);
 
   const activity = usePaymentStore((state) => state.payments);
-  const totalIncome = usePaymentStore((state) => state.totalIncome);
   const fetchPaymentsData = usePaymentStore((state) => state.fetchPaymentsData);
+
+  const fetchAnalytics = useAnalyticsStore((state) => state.fetchAnalytics);
+  const analytics = useAnalyticsStore((state) => state.analytics);
 
   const checkins = useCheckinStore((state) => state.todayCheckins);
   const fetchTodayCheckins = useCheckinStore(
@@ -63,6 +70,7 @@ export default function Dashboard() {
         fetchStats(true),
         fetchPaymentsData(),
         fetchTodayCheckins(true),
+        fetchAnalytics(),
       ]);
     } catch (e) {
       setError("No se pudo cargar el dashboard. Verificá tu conexión.");
@@ -121,9 +129,11 @@ export default function Dashboard() {
         </div>
       )}
 
-      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 w-full">
-        {loading ? (
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 w-full mb-4">
+        {loading || !analytics ? (
           <>
+            <StatSkeleton />
+            <StatSkeleton />
             <StatSkeleton />
             <StatSkeleton />
             <StatSkeleton />
@@ -131,42 +141,71 @@ export default function Dashboard() {
           </>
         ) : (
           <>
+            {/* Tarjetas Financieras */}
             <div className="p-2">
               <StatCard
-                title="Total Clientes"
-                value={totalClients}
-                icon={<Users size={24} />}
-                color="bg-green-100"
-                subtitle="Todos los clientes"
+                title="Total Ingresos Historico"
+                value={formatCurrency(analytics.kpis.totalIncome)}
+                icon={<Wallet size={20} absoluteStrokeWidth={true} />}
+                color="bg-emerald-50 text-emerald-600"
+                subtitle="Desde el inicio"
               />
             </div>
             <div className="p-2">
               <StatCard
-                title="Total Ingresos del mes"
-                value={`$${totalIncome}`}
-                icon={<Wallet size={24} />}
-                color="bg-green-100"
-                subtitle="Ingresos del mes"
+                title="Ingresos Este Año"
+                value={formatCurrency(analytics.kpis.totalIncomeYear)}
+                icon={<Calendar size={20} absoluteStrokeWidth={true}/>}
+                color="bg-teal-50 text-teal-600"
+                subtitle="Acumulado del año"
+              />
+            </div>
+            <div className="p-2">
+              <StatCard
+                title="Ingresos Este Mes"
+                value={formatCurrency(analytics.kpis.totalThisMonth)}
+                icon={
+                  analytics.kpis.growthPercentage >= 0 
+                  ? <TrendingUp size={20} absoluteStrokeWidth={true} /> 
+                  : <TrendingDown size={20} absoluteStrokeWidth={true} />
+                }
+                color={analytics.kpis.growthPercentage >= 0 ? "bg-green-50 text-green-600" : "bg-red-50 text-red-600"}
+                subtitle={
+                  <span className={analytics.kpis.growthPercentage >= 0 ? "text-green-500 font-bold" : "text-red-500 font-bold"}>
+                    {analytics.kpis.growthPercentage >= 0 ? "+" : ""}{analytics.kpis.growthPercentage}% vs mes pasado
+                  </span>
+                }
+              />
+            </div>
+
+            {/* Tarjetas de Clientes */}
+            <div className="p-2">
+              <StatCard
+                title="Total Clientes"
+                value={totalClients}
+                icon={<Users size={20} absoluteStrokeWidth={true} />}
+                color="bg-indigo-50 text-indigo-600"
+                subtitle="En la base de datos"
               />
             </div>
             <div className="p-2">
               <StatCard
                 title="Miembros Activos"
                 value={activeClients}
-                textColor="text-blue-500"
-                icon={<Users size={24} />}
-                color="bg-blue-100"
-                subtitle="Miembros activos"
+                textColor="text-cyan-600"
+                icon={<Users size={20} absoluteStrokeWidth={true} />}
+                color="bg-cyan-50 text-cyan-500"
+                subtitle="Tienen plan vigente"
               />
             </div>
             <div className="p-2">
               <StatCard
                 title="Miembros Inactivos"
                 value={`${expiredClients}`}
-                textColor="text-red-500"
-                icon={<Users size={24} />}
-                color="bg-red-100"
-                subtitle="Miembros inactivos"
+                textColor="text-rose-600"
+                icon={<AlertCircle size={20} absoluteStrokeWidth={true} />}
+                color="bg-rose-50 text-rose-500"
+                subtitle="Plan expirado o sin plan"
               />
             </div>
           </>

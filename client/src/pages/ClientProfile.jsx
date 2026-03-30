@@ -180,6 +180,11 @@ export default function ClientProfile() {
                         )
                       : "—",
                   },
+                  {
+                    icon: <Mail size={14} className="text-indigo-600" />,
+                    label: "Permitir envío de correos",
+                    value: client?.allowEmail ? "Sí" : "No",
+                  },
                 ].map(({ icon, label, value }) => (
                   <div key={label} className="flex items-center gap-2">
                     <div className="bg-indigo-100 p-1.5 rounded-md">{icon}</div>

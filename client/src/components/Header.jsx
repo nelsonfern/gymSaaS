@@ -3,9 +3,11 @@ import { Link } from "./Link";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { Search, Settings } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
+import { useSettingsStore } from "../store/useSettingsStore";
 
 export function Header() {
   const [searchParams] = useSearchParams();
+  const { user } = useAuth();
   const { logout } = useAuth();
   const navigate = useNavigate();
 
@@ -59,16 +61,24 @@ export function Header() {
               />
             </div>
           </form>
-          <div className="flex items-center">
-            <Link to="#" className="text-gray-500 hover:text-gray-900">
+          <div className="flex items-center divide-x divide-gray-400">
+            <Link
+              to="/settings"
+              className="text-gray-500 hover:text-gray-900  pr-3"
+            >
               <Settings size={18} />
             </Link>
-            <button
-              onClick={handleLogout}
-              className=" hover:shadow-lg hover:shadow-indigo-600/50 ml-3 inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-            >
-              Logout
-            </button>
+            <div className="ml-3 flex flex-col items-end">
+              <p className="text-xs text-gray-500 font-medium">
+                {user.name.toUpperCase()} | {user.role.toUpperCase()}
+              </p>
+              <button
+                onClick={handleLogout}
+                className="text-xs bg-transparent text-gray-600 hover:text-indigo-600 font-medium cursor-pointer"
+              >
+                Cerrar Sesión
+              </button>
+            </div>
           </div>
         </div>
       </div>

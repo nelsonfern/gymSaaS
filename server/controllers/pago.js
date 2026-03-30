@@ -2,6 +2,8 @@ import { PaymentModel } from '../models/pago.js'
 import { ClientModel } from '../models/client.js'
 import { PlanModel } from '../models/plan.js'
 import Payment from '../schemas/pago.js'
+import { sendMail } from '../services/sendMail.js'
+import { paymentTemplate } from '../services/emailTemplate.js'
 
 export class PaymentController {
 
@@ -62,8 +64,26 @@ export class PaymentController {
                 plan,
                 membershipStart,
                 membershipEnd: endDate,
+                expiringMailSent: false,
                 status: 'activo'
             })
+
+            if(clientExists?.allowEmail && clientExists?.email){
+                await sendMail({
+                    to: clientExists.email,
+                    subject: "Comprobante de pago",
+                    html: paymentTemplate({
+                        name: clientExists.name,
+                        amount: payment.amount,
+                        planName: planExists.name,
+                        paymentType: payment.method,
+                        originalPrice: payment.originalPrice,
+                        discount: payment.discount,
+                        note: payment.note,
+                        date: new Date().toLocaleDateString("es-AR")
+                    })
+                })
+            }
 
             res.status(201).json(payment)
 
@@ -139,6 +159,15 @@ export class PaymentController {
             const totalMonth = await PaymentModel.totalPaymentsMonth()
             const totalYear = await PaymentModel.totalPaymentsYear()
             res.status(200).json({ total, totalMonth, totalYear })
+        } catch (e) {
+            console.error(e)
+            res.status(500).json({ message: "Error interno del servidor" })
+        }
+    }
+    static async getPaymentAnalytics(req, res) {
+        try {
+            const analytics = await PaymentModel.getPaymentAnalytics()
+            res.status(200).json(analytics)
         } catch (e) {
             console.error(e)
             res.status(500).json({ message: "Error interno del servidor" })

@@ -50,6 +50,14 @@ const clientSchema = new mongoose.Schema({
     delete: {
         type: Boolean,
         default: false
+    },
+    allowEmail: {
+        type: Boolean,
+        default: false
+    },
+    expiringMailSent: {
+        type: Boolean,
+        default: false
     }
 
 }, {

@@ -26,23 +26,30 @@ export default function Login() {
   };
   return (
     <>
-      <div className="flex min-h-full flex-col justify-center px-6 py-12 lg:px-8 z-10">
-        <div className="sm:mx-auto sm:w-full sm:max-w-sm">
+      <div className="flex flex-row w-200 h-120 bg-white  items-center absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-lg shadow-lg shadow-gray-400/30 border- border-gray-200">
+        <div className="bg-blue-800 w-1/2 h-full rounded-l-lg relative">
           <img
-            alt="NefGym"
-            src="/dumbbell-gym-svgrepo-com.svg"
-            className="mx-auto h-20 w-auto "
+            src="/brett-jordan-U2q73PfHFpM-unsplash.jpg"
+            alt="gym"
+            className="w-full h-full opacity-50 grayscale-25 rounded-l-lg"
           />
-          <h2 className="mt-4 text-center text-2xl/9 font-bold tracking-tight text-gray-900">
-            NefGym App
-          </h2>
-          <p className="mt-2 text-center text-sm/6 text-gray-500">
-            Panel de Administración
-          </p>
+          <div className="absolute bottom-0 left-0 m-5">
+            <h1 className="text-white text-4xl font-bold italic">NEFGYM APP</h1>
+            <p className="text-gray-300 text-md font-normal tracking-wider italic">
+              Panel de Administración
+            </p>
+          </div>
         </div>
-
-        <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm border border-solid border-gray-200 rounded-lg p-5 bg-white shadow-lg">
-          <form onSubmit={handleSubmit} className="space-y-6">
+        <div className="w-2/3 m-10 p-10 h-full bg-white flex flex-col justify-center items-center">
+          <div className="mb-5">
+            <h2 className="mt-2  text-3xl font-bold tracking-tight text-gray-900">
+              Bienvenido de nuevo.
+            </h2>
+            <p className="mt-1 text-sm text-gray-500">
+              Inicia sesión para acceder al panel de Administración
+            </p>
+          </div>
+          <form onSubmit={handleSubmit} className="space-y-6 w-full max-w-sm">
             <div>
               <label
                 htmlFor="email"
@@ -75,10 +82,10 @@ export default function Login() {
                 >
                   Contraseña
                 </label>
-                <div className="text-sm">
+                <div className="text-xs">
                   <a
                     href="#"
-                    className="font-semibold text-indigo-600 hover:text-indigo-500"
+                    className=" font-semibold text-indigo-600 hover:text-indigo-500"
                   >
                     ¿Olvidaste tu contraseña?
                   </a>
@@ -117,8 +124,8 @@ export default function Login() {
               </button>
             </div>
             <div className="h-px bg-gray-200 my-6"></div>
-            <div className="text-center">
-              <p>
+            <div className="text-center text-sm ">
+              <p className="">
                 ¿No tienes acceso aún?{" "}
                 <a
                   href="#"
@@ -131,11 +138,6 @@ export default function Login() {
           </form>
         </div>
       </div>
-      <img
-        src="/ambitious-studio-rick-barrett-wZlsHihO2g4-unsplash.jpg"
-        alt="gym"
-        className="absolute inset-0 w-full h-full object-cover opacity-15 z-[-1] blur-xs "
-      />
     </>
   );
 }

@@ -2,12 +2,23 @@ import { ClientModel } from '../models/client.js'
 import { PlanModel } from '../models/plan.js'
 import Client from '../schemas/client.js'
 import { getMembershipStatus, getDaysLeft } from '../utils/membershipStatus.js'
+import { sendMail } from '../services/sendMail.js'
+import { welcomeTemplate } from '../services/emailTemplate.js'
 
 export class ClientController {
 
     static async createClient(req, res) {
         try {
             const data = await ClientModel.createClient(req.body)
+            
+            if (data.allowEmail && data.email) {
+                await sendMail({
+                    to: data.email,
+                    subject: "¡Bienvenido a nuestro gimnasio! 🏋️",
+                    html: welcomeTemplate({ name: data.name })
+                }).catch(err => console.error("Error welcome mail:", err.message));
+            }
+
             res.status(201).json(data)
 
         } catch (e) {
@@ -25,8 +36,9 @@ export class ClientController {
 
     static async updateClient(req, res) {
         try {
-            const allowedUpdates = ["name", "lastName", "phone", "dni", "email"]
+            const allowedUpdates = ["name", "lastName", "phone", "dni", "email", "allowEmail"]
             const updates = Object.keys(req.body)
+            console.log("Campos recibidos en updateClient:", updates)
             const isValid = updates.every(field => allowedUpdates.includes(field))
 
             if (!isValid) {

@@ -192,4 +192,72 @@ export class UserController {
             res.status(500).json({ message: "Error interno" })
         }
     }
+    static async createStaff(req, res){
+        try {
+            if(req.user.role !== "admin"){
+                return res.status(403).json({ message: "No autorizado" })
+            }
+            const {name, email, password} = req.body;
+            const hashedPassword = await bcrypt.hash(password, 10);
+        
+            const newStaff = await UserModel.createUser({name, email, password: hashedPassword, role: "staff"})
+            res.status(201).json({message: "Staff creado exitosamente"})
+            } catch (e) {
+                if (e.name === "ValidationError") {
+                    const errors = Object.values(e.errors).map(err => err.message)
+                    return res.status(400).json({ message: "Datos inválidos", errors })
+                }
+                console.error(e)
+                res.status(500).json({ message: "Error interno del servidor" })
+            }
+    }
+    static async getStaff(req, res){
+        try {
+            if(req.user.role !== "admin"){
+                return res.status(403).json({ message: "No autorizado" })
+            }
+            const staff = await UserModel.getStaff()
+            res.status(200).json(staff)
+        } catch (e) {
+            console.error(e)
+            res.status(500).json({ message: "Error interno del servidor" })
+        }
+    }
+    static async updateStaff(req, res){
+        try {
+            if(req.user.role !== "admin"){
+                return res.status(403).json({ message: "No autorizado" })
+            }
+            const {name, email, password} = req.body;
+            let updateData = { name, email };
+            if (password && password.trim() !== "") {
+                updateData.password = await bcrypt.hash(password, 10);
+            }
+            const staff = await UserModel.updateUser(req.params.id, updateData)
+            if(!staff){
+                return res.status(404).json({ message: "Staff no encontrado" })
+            }
+            
+            res.status(200).json({message: "Staff actualizado exitosamente"})
+        } catch (e) {
+            if (e.name === "ValidationError") {
+                const errors = Object.values(e.errors).map(err => err.message)
+                return res.status(400).json({ message: "Datos inválidos", errors })
+            }
+            console.error(e)
+            res.status(500).json({ message: "Error interno del servidor" })
+        }
+    }
+    static async deleteStaff(req, res){
+        try {
+            if(req.user.role !== "admin"){
+                return res.status(403).json({ message: "No autorizado" })
+            }
+            const staff = await UserModel.deleteUser(req.params.id)
+            res.status(200).json({message: "Staff eliminado exitosamente"})
+        } catch (e) {
+            console.error(e)
+            res.status(500).json({ message: "Error interno del servidor" })
+        }
+    }
 }
