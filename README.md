@@ -1,8 +1,8 @@
-# 🏋️‍♂️ GymSaaS
+# 🏋️‍♂️ NefGym 
 
 **Una solución SaaS moderna y completa para Gimnasios y Centros Deportivos**
 
-GymSaaS es una aplicación web full-stack integral diseñada para ayudar a los dueños de gimnasios a administrar sus instalaciones con facilidad. Desarrollada pensando en el rendimiento y la experiencia del usuario, esta plataforma maneja todo, desde el control de acceso y pagos recurrentes hasta analíticas detalladas y gestión del personal. Esta version es una version de prueba (MVP) para un despliegue en VPS.
+NefGym es una aplicación web full-stack integral diseñada para ayudar a los dueños de gimnasios a administrar sus instalaciones con facilidad. Desarrollada pensando en el rendimiento y la experiencia del usuario, esta plataforma maneja todo, desde el control de acceso y pagos recurrentes hasta analíticas detalladas y gestión del personal. Esta version es una version de prueba (MVP) para un despliegue en VPS.
 
 ---
 
@@ -84,7 +84,7 @@ VITE_API_URL=http://localhost:5100
 
 ## 🐳 Despliegue con Docker (Opcional)
 
-GymSaaS viene con un archivo `docker-compose.yml` para una configuración y despliegue locales ultra rápidos. Asegúrate de tener Docker y Docker Compose instalados.
+NefGym viene con un archivo `docker-compose.yml` para una configuración y despliegue locales ultra rápidos. Asegúrate de tener Docker y Docker Compose instalados.
 
 Esto levanta automáticamente el Frontend, el Backend y un contenedor de base de datos MongoDB unidos en la misma red.
 
