@@ -2,23 +2,23 @@
 
 **Una solución SaaS moderna y completa para Gimnasios y Centros Deportivos**
 
-GymSaaS es una aplicación web full-stack integral diseñada para ayudar a los dueños de gimnasios a administrar sus instalaciones con facilidad. Desarrollada pensando en el rendimiento y la experiencia del usuario, esta plataforma maneja todo, desde el control de acceso y pagos recurrentes hasta analíticas detalladas y gestión del personal.
+GymSaaS es una aplicación web full-stack integral diseñada para ayudar a los dueños de gimnasios a administrar sus instalaciones con facilidad. Desarrollada pensando en el rendimiento y la experiencia del usuario, esta plataforma maneja todo, desde el control de acceso y pagos recurrentes hasta analíticas detalladas y gestión del personal. Esta version es una version de prueba (MVP) para un despliegue en VPS.
 
 ---
 
 ## 📸 Capturas de Pantalla
 
-*(Añade o reemplaza tus capturas de pantalla aquí)*
+_(Añade o reemplaza tus capturas de pantalla aquí)_
 
-| Dashboard Principal | Gestión de Clientes |
-| :---: | :---: |
-| ![Dashboard](https://via.placeholder.com/600x400?text=Dashboard+Principal) | ![Clientes](https://via.placeholder.com/600x400?text=Gestion+de+Clientes) |
-
-| Pasarela de Pagos | Configuración del Gimnasio |
-| :---: | :---: |
-| ![Pagos](https://via.placeholder.com/600x400?text=Flujo+de+Pagos) | ![Configuración](https://via.placeholder.com/600x400?text=Panel+de+Configuracion) |
-
-> **Nota:** Puedes guardar tus propias imágenes en una carpeta (por ejemplo `/images` dentro de tu repositorio) y reemplazar los enlaces de arriba con rutas locales como `![Dashboard](./images/dashboard.png)`.
+|                           LOGIN                           |          Dashboard Principal           |                                 Gestión de Clientes                                 |
+| :-------------------------------------------------------: | :------------------------------------: | :---------------------------------------------------------------------------------: | ----------------------------------------------------- |
+|                [LOGIN](./images/login.png)                |  [Dashboard](./images/dashboard.png)   | [Clientes](./images/clientes.png) [Clientes Profile](./images/clientes-profile.png) | [Slide Agregar Cliente](./images/agregar_cliente.png) |
+|                         Check-in                          |                 Planes                 |                                      Reportes                                       |
+|                           :---:                           |                 :---:                  |                                        :---:                                        |
+|             [Check-in](./images/checkin.png)              |     [Planes](./images/planes.png)      |                          [Reportes](./images/reportes.png)                          |
+|                     Pasarela de Pagos                     |       Configuración del Gimnasio       |
+|                           :---:                           |                 :---:                  |
+| [Pagos](./images/pagos1.png) [Pagos](./images/pagos2.png) | [Configuración](./images/settings.png) |
 
 ---
 
@@ -39,6 +39,7 @@ GymSaaS es una aplicación web full-stack integral diseñada para ayudar a los d
 ## 💻 Tecnologías Utilizadas
 
 ### Frontend
+
 - **Framework**: React 19 + Vite
 - **Estilos**: Tailwind CSS v4 + Framer Motion (para animaciones fluidas)
 - **Manejo de Estado**: Zustand
@@ -47,6 +48,7 @@ GymSaaS es una aplicación web full-stack integral diseñada para ayudar a los d
 - **Formularios y Peticiones**: React Hook Form, Axios
 
 ### Backend
+
 - **Entorno**: Node.js
 - **Framework**: Express.js
 - **Base de Datos**: MongoDB (Mongoose ODM)
@@ -55,27 +57,12 @@ GymSaaS es una aplicación web full-stack integral diseñada para ayudar a los d
 
 ---
 
-## 🚀 Guía de Instalación
-
-### Requisitos Previos
-
-Asegúrate de tener instalado lo siguiente en tu máquina local:
-- **Node.js** (v18 o superior)
-- **MongoDB** (ejecutándose localmente, o una URI de conexión a MongoDB Atlas)
-- **Git**
-
-### 1. Clonar el repositorio
-
-```bash
-git clone https://github.com/nelsonfern/gymSaaS.git
-cd gymSaaS
-```
-
 ### 2. Variables de Entorno
 
-Debes configurar las variables `.env` tanto para el cliente *(frontend)* como para el servidor *(backend)*.
+Se deben configurar las variables `.env` tanto para el cliente _(frontend)_ como para el servidor _(backend)_.
 
-Crea un archivo `.env` en el directorio `/server`:
+Crear un archivo `.env` en el directorio `/server` o agregar las variables en el archivo `docker-compose.yml`:
+
 ```env
 PORT=5100
 MONGO_URI=mongodb://localhost:27017/gymdb
@@ -84,43 +71,24 @@ JWT_REFRESH_SECRET=tu_clave_refresh_secreta_aqui
 MAIL_USER=tu_correo@gmail.com
 MAIL_PASS=tu_contraseña_de_aplicacion
 MAIL_FROM_NAME="GymSaaS"
+MAIL_HOST=
+MAIL_PORT=
 CLIENT_URL=http://localhost:5173
 ```
 
-Crea un archivo `.env` en el directorio `/client`:
+Crear un archivo `.env` en el directorio `/client`:
+
 ```env
 VITE_API_URL=http://localhost:5100
 ```
-
-### 3. Instalación y Ejecución (Desarrollo Local)
-
-**Levantar el Servidor (Backend):**
-```bash
-cd server
-npm install
-npm run dev
-```
-
-**Levantar el Cliente (Frontend):**
-```bash
-cd client
-npm install
-npm run dev
-```
-
-El frontend estará disponible en `http://localhost:5173` y el backend en `http://localhost:5100`.
-
----
 
 ## 🐳 Despliegue con Docker (Opcional)
 
 GymSaaS viene con un archivo `docker-compose.yml` para una configuración y despliegue locales ultra rápidos. Asegúrate de tener Docker y Docker Compose instalados.
 
-```bash
-# Construye y ejecuta los contenedores en segundo plano
-docker-compose up --build -d
-```
-Esto levantará automáticamente el Frontend, el Backend y un contenedor de base de datos MongoDB unidos en la misma red.
+Esto levanta automáticamente el Frontend, el Backend y un contenedor de base de datos MongoDB unidos en la misma red.
+
+Esto se tomo como opcion y base para el despliegue en VPS, además de ser una forma de mantener el proyecto en constante desarrollo y pruebas.
 
 ---
 
@@ -153,15 +121,23 @@ gymSaaS/
 ---
 
 ## 🛡️ Seguridad
+
 Consideraciones de seguridad construidas por defecto en la API:
+
 - **Helmet**: Configura cabeceras HTTP de forma segura para proteger la App Express.
 - **Express Mongo Sanitize**: Previene inyecciones NoSQL por parte de actores maliciosos.
 - **Express Rate Limit**: Límite de peticiones para mitigar ataques de denegación de servicio (DDoS) o ataques de fuerza bruta en los endpoints de Login.
 - **Autenticación JWT**: Mediante Bearer Tokens autorregulados basados en tiempo y validación segura del refresh token.
 
 ## 🤝 Contribuir
+
 ¡Las contribuciones, reportes de problemas (issues) y solicitudes de nuevas características son siempre bienvenidas!
 No dudes en revisar la [página de issues](https://github.com/nelsonfern/gymSaaS/issues).
 
 ## 📝 Licencia
-Este proyecto está bajo la Licencia ISC.
+
+Este proyecto no es de código abierto, es un proyecto personal para uso exclusivo del autor.
+
+Autor: Nelson Fernandez
+Fecha: 30/03/2026
+Email: [EMAIL_ADDRESS](nelsonfern83@gmail.com)
