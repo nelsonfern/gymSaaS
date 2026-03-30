@@ -18,6 +18,9 @@ import { uploadRoutes } from './routes/upload.js'
 
 const app = express()
 
+// Confiar en el proxy de Render para que express-rate-limit funcione correctamente
+app.set('trust proxy', 1)
+
 // Servir la carpeta uploads como archivos estáticos
 app.use('/uploads', express.static('public/uploads'))
 
