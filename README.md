@@ -12,13 +12,13 @@ GymSaaS es una aplicación web full-stack integral diseñada para ayudar a los d
 
 |                           LOGIN                           |          Dashboard Principal           |                                 Gestión de Clientes                                
 |                           :---:                           |                 :---:                  |                                        :---:      
-|                [LOGIN](./images/login.png)                |  [Dashboard](./images/dashboard.png)   | [Clientes](./images/clientes.png)[Clientes Profile](./images/clientes-profile.png) 
+|                ![LOGIN](./images/login.png)                |  ![Dashboard](./images/dashboard.png)   | ![Clientes](./images/clientes.png)![Clientes Profile](./images/clientes-profile.png) 
 |                         Check-in                          |                 Planes                 |                                      Reportes                                      
 |                           :---:                           |                 :---:                  |                                        :---:                                       
-|             [Check-in](./images/checkin.png)              |     [Planes](./images/planes.png)      |                          [Reportes](./images/reportes.png)                         
+|             ![Check-in](./images/checkin.png)              |     ![Planes](./images/planes.png)      |                          ![Reportes](./images/reportes.png)                         
 |                     Pasarela de Pagos                     |       Configuración del Gimnasio       |                                      Agregar Clientes                             
 |                           :---:                           |                 :---:                  |                                        :---:                                
-| [Pagos](./images/pagos1.png) [Pagos](./images/pagos2.png) | [Configuración](./images/settings.png) |                [Slide Agregar Cliente](./images/agregar_cliente.png) 
+| ![Pagos](./images/pagos1.png) ![Pagos](./images/pagos2.png) | ![Configuración](./images/settings.png) |                ![Slide Agregar Cliente](./images/agregar_cliente.png) 
 
 ---
 
