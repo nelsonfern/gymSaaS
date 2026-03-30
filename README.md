@@ -8,7 +8,7 @@ GymSaaS es una aplicación web full-stack integral diseñada para ayudar a los d
 
 ## 📸 Capturas de Pantalla
 
-_(Añade o reemplaza tus capturas de pantalla aquí)_
+
 
 |                           LOGIN                           |          Dashboard Principal           |                                 Gestión de Clientes                                 |
 | :-------------------------------------------------------: | :------------------------------------: | :---------------------------------------------------------------------------------: | ----------------------------------------------------- |
