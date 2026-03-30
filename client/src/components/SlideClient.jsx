@@ -59,8 +59,7 @@ export function AddClientSlideOver() {
       {/* Fondo oscuro que al clickear ejecute closeSlide() */}
       <div className="fixed inset-0 z-50">
         <div
-          className="bg-black/20 backdrop-blur-xs
- w-full h-full"
+          className="absolute inset-0 bg-black/20 backdrop-blur-xs"
           onClick={closeSlide}
         ></div>
         {/* Panel lateral blanco con un formulario*/}
@@ -69,7 +68,7 @@ export function AddClientSlideOver() {
             className=" w-110 h-full shadow-xs shadow-gray-200/50 "
             style={{ backgroundColor: "#F3F4F6" }}
           >
-            <div className="flex items-center justify-between p-4">
+            <div className="flex items-center justify-between p-4 bg-white">
               <div className="flex flex-col">
                 <h2 className="text-xl font-bold text-gray-900">
                   Agregar Nuevo Cliente
@@ -79,6 +78,7 @@ export function AddClientSlideOver() {
                 </p>
               </div>
               <button
+                type="button"
                 onClick={closeSlide}
                 className="text-gray-400 hover:text-gray-500"
               >
@@ -98,7 +98,7 @@ export function AddClientSlideOver() {
                 </svg>
               </button>
             </div>
-            <div className="h-px bg-gray-200  mx-4"></div>
+            <div className="h-px bg-gray-200 mx-4"></div>
             <div className="">
               <form className="space-y-4 mt-3" onSubmit={handleSubmit}>
                 <div className="p-4 pb-2">

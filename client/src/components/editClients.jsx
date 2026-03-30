@@ -66,8 +66,7 @@ export function EditClientSlideOver() {
       {/* Fondo oscuro que al clickear ejecute closeSlide() */}
       <div className="fixed inset-0 z-50">
         <div
-          className="bg-black/20 backdrop-blur-xs
- w-full h-full"
+          className="absolute inset-0 bg-black/20 backdrop-blur-xs"
           onClick={closeSlide}
         ></div>
         {/* Panel lateral blanco con un formulario*/}
@@ -80,6 +79,7 @@ export function EditClientSlideOver() {
                 </h2>
               </div>
               <button
+                type="button"
                 onClick={closeSlide}
                 className="text-gray-400 hover:text-gray-500"
               >
