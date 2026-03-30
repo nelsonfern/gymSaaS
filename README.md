@@ -10,15 +10,15 @@ GymSaaS es una aplicación web full-stack integral diseñada para ayudar a los d
 
 
 
-|                           LOGIN                           |          Dashboard Principal           |                                 Gestión de Clientes                                 |
-| :-------------------------------------------------------: | :------------------------------------: | :---------------------------------------------------------------------------------: | ----------------------------------------------------- |
-|                [LOGIN](./images/login.png)                |  [Dashboard](./images/dashboard.png)   | [Clientes](./images/clientes.png) [Clientes Profile](./images/clientes-profile.png) | [Slide Agregar Cliente](./images/agregar_cliente.png) |
-|                         Check-in                          |                 Planes                 |                                      Reportes                                       |
-|                           :---:                           |                 :---:                  |                                        :---:                                        |
-|             [Check-in](./images/checkin.png)              |     [Planes](./images/planes.png)      |                          [Reportes](./images/reportes.png)                          |
-|                     Pasarela de Pagos                     |       Configuración del Gimnasio       |
-|                           :---:                           |                 :---:                  |
-| [Pagos](./images/pagos1.png) [Pagos](./images/pagos2.png) | [Configuración](./images/settings.png) |
+|                           LOGIN                           |          Dashboard Principal           |                                 Gestión de Clientes                                
+|                           :---:                           |                 :---:                  |                                        :---:      
+|                [LOGIN](./images/login.png)                |  [Dashboard](./images/dashboard.png)   | [Clientes](./images/clientes.png)[Clientes Profile](./images/clientes-profile.png) 
+|                         Check-in                          |                 Planes                 |                                      Reportes                                      
+|                           :---:                           |                 :---:                  |                                        :---:                                       
+|             [Check-in](./images/checkin.png)              |     [Planes](./images/planes.png)      |                          [Reportes](./images/reportes.png)                         
+|                     Pasarela de Pagos                     |       Configuración del Gimnasio       |                                      Agregar Clientes                             
+|                           :---:                           |                 :---:                  |                                        :---:                                
+| [Pagos](./images/pagos1.png) [Pagos](./images/pagos2.png) | [Configuración](./images/settings.png) |                [Slide Agregar Cliente](./images/agregar_cliente.png) 
 
 ---
 
@@ -140,4 +140,4 @@ Este proyecto no es de código abierto, es un proyecto personal para uso exclusi
 
 Autor: Nelson Fernandez
 Fecha: 30/03/2026
-Email: [EMAIL_ADDRESS](nelsonfern83@gmail.com)
+Email: nelsonfern83@gmail.com
