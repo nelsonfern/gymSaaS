@@ -11,15 +11,16 @@ export class ClientController {
         try {
             const data = await ClientModel.createClient(req.body)
             
+            res.status(201).json(data)
+
             if (data.allowEmail && data.email) {
-                await sendMail({
+                // Ejecuta el envío de email en segundo plano para no bloquear la respuesta HTTP
+                sendMail({
                     to: data.email,
                     subject: "¡Bienvenido a nuestro gimnasio! 🏋️",
                     html: welcomeTemplate({ name: data.name })
                 }).catch(err => console.error("Error welcome mail:", err.message));
             }
-
-            res.status(201).json(data)
 
         } catch (e) {
             if (e.name === "ValidationError") {

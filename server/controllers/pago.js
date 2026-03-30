@@ -68,8 +68,11 @@ export class PaymentController {
                 status: 'activo'
             })
 
+            res.status(201).json(payment)
+
             if(clientExists?.allowEmail && clientExists?.email){
-                await sendMail({
+                // Ejecuta el envío de email en segundo plano para no bloquear la respuesta HTTP
+                sendMail({
                     to: clientExists.email,
                     subject: "Comprobante de pago",
                     html: paymentTemplate({
@@ -82,10 +85,9 @@ export class PaymentController {
                         note: payment.note,
                         date: new Date().toLocaleDateString("es-AR")
                     })
-                })
+                }).catch(err => console.error("Error al enviar email de pago:", err))
             }
 
-            res.status(201).json(payment)
 
         } catch (e) {
             if (e.name === "ValidationError") {
