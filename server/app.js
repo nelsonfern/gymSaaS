@@ -15,6 +15,7 @@ import { checkinRoutes } from './routes/checkin.js'
 import { startMembershipJob } from './jobs/membershipJob.js'
 import { settingsRoutes } from './routes/settings.js'
 import { uploadRoutes } from './routes/upload.js'
+import { verifySMTP } from './utils/mailer.js'
 
 const app = express()
 
@@ -71,6 +72,7 @@ try {
     const PORT = process.env.PORT || 3000
     app.listen(PORT, () => {
         console.log(`Server is running on port ${PORT}`)
+        verifySMTP()
     })
 } catch (e) {
     console.log(e)
