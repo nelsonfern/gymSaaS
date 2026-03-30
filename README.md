@@ -1,150 +1,167 @@
 # 🏋️‍♂️ GymSaaS
 
-**A Complete Modern SaaS Solution for Gyms and Health Clubs**
+**Una solución SaaS moderna y completa para Gimnasios y Centros Deportivos**
 
-GymSaaS is a comprehensive, full-stack web application designed to help gym owners manage their facilities with ease. Built with performance and user experience in mind, this platform handles everything from member check-ins and payments to insightful analytics and staff management.
-
----
-
-## ✨ Features
-
-- **👥 Client Management**: Easily register and manage gym members, their personal data, and current status.
-- **💳 Memberships & Payments**: Set up custom billing plans (daily, monthly, yearly), track member payments, and auto-manage expirations.
-- **✅ Access Control (Check-In)**: A dedicated system for member check-in that automatically validates active memberships and daily limits.
-- **🔐 Role-Based Access (RBAC)**: Supports `Admin` and `Staff` roles. Keep your sensitive financial data visible only to the administrators.
-- **📊 Analytics & Reports**: Powerful dashboard with interactive charts (Recharts) to visualize revenue, active members, and check-in trends.
-- **⚙️ Deep Customization**: Dynamically update your gym's logo, name, currency, and contact information straight from the UI.
-- **📧 Automated Emails**: Built-in email integration using Nodemailer (supports Gmail, Resend, etc.) for member onboarding and updates.
-- **🕰️ Automated Background Jobs**: Uses `node-cron` to automatically verify member statuses and expire plans when their time runs out.
-- **🐳 Docker Ready**: Easily deploy anywhere with pre-configured Dockerfiles and `docker-compose.yml`.
+GymSaaS es una aplicación web full-stack integral diseñada para ayudar a los dueños de gimnasios a administrar sus instalaciones con facilidad. Desarrollada pensando en el rendimiento y la experiencia del usuario, esta plataforma maneja todo, desde el control de acceso y pagos recurrentes hasta analíticas detalladas y gestión del personal.
 
 ---
 
-## 💻 Tech Stack
+## 📸 Capturas de Pantalla
+
+*(Añade o reemplaza tus capturas de pantalla aquí)*
+
+| Dashboard Principal | Gestión de Clientes |
+| :---: | :---: |
+| ![Dashboard](https://via.placeholder.com/600x400?text=Dashboard+Principal) | ![Clientes](https://via.placeholder.com/600x400?text=Gestion+de+Clientes) |
+
+| Pasarela de Pagos | Configuración del Gimnasio |
+| :---: | :---: |
+| ![Pagos](https://via.placeholder.com/600x400?text=Flujo+de+Pagos) | ![Configuración](https://via.placeholder.com/600x400?text=Panel+de+Configuracion) |
+
+> **Nota:** Puedes guardar tus propias imágenes en una carpeta (por ejemplo `/images` dentro de tu repositorio) y reemplazar los enlaces de arriba con rutas locales como `![Dashboard](./images/dashboard.png)`.
+
+---
+
+## ✨ Características Principales
+
+- **👥 Gestión de Clientes**: Registra y administra fácilmente a los miembros del gimnasio, sus datos personales y su estado actual.
+- **💳 Membresías y Pagos**: Configura planes de facturación personalizados (diarios, mensuales, anuales), rastrea los pagos de los miembros y administra automáticamente los vencimientos.
+- **✅ Control de Acceso (Check-In)**: Un sistema dedicado para el registro de entrada de los miembros que valida automáticamente las membresías activas y los límites diarios.
+- **🔐 Roles y Permisos (RBAC)**: Soporta roles de administrador (`Admin`) y empleados (`Staff`). Mantén tus datos financieros confidenciales visibles únicamente para los dueños.
+- **📊 Analíticas y Reportes**: Potente panel de control con gráficos interactivos (usando Recharts) para visualizar ingresos, miembros activos y tendencias de asistencia.
+- **⚙️ Alta Personalización**: Actualiza dinámicamente el logotipo de tu gimnasio, nombre, moneda e información de contacto directamente desde la plataforma.
+- **📧 Correos Electrónicos Automatizados**: Integración de correo electrónico incorporada utilizando Nodemailer (compatible con Gmail) para la bienvenida de miembros y comprobantes de pago.
+- **🕰️ Tareas en Segundo Plano**: Utiliza Tareas Cron (`node-cron`) para verificar y actualizar automáticamente los estados de los miembros y caducar planes todos los días de forma automática.
+- **🐳 Listo para Docker**: Despliégalo fácilmente en cualquier lugar (VPS, AWS, DigitalOcean) con los `Dockerfiles` preconfigurados y `docker-compose.yml`.
+
+---
+
+## 💻 Tecnologías Utilizadas
 
 ### Frontend
 - **Framework**: React 19 + Vite
-- **Styling**: Tailwind CSS v4 + Framer Motion (for smooth animations)
-- **State Management**: Zustand
-- **Routing**: React Router DOM (v7)
-- **Icons & Charts**: Lucide React / Recharts
-- **Forms & Data**: React Hook Form, Axios
+- **Estilos**: Tailwind CSS v4 + Framer Motion (para animaciones fluidas)
+- **Manejo de Estado**: Zustand
+- **Rutas**: React Router DOM (v7)
+- **Iconos y Gráficos**: Lucide React / Recharts
+- **Formularios y Peticiones**: React Hook Form, Axios
 
 ### Backend
-- **Runtime**: Node.js
+- **Entorno**: Node.js
 - **Framework**: Express.js
-- **Database**: MongoDB (Mongoose ODM)
-- **Security**: JWT Authentication, bcrypt, Express Rate Limit, Helmet, Mongo Sanitize
-- **Utilities**: Multer (file uploads), Nodemailer, node-cron
+- **Base de Datos**: MongoDB (Mongoose ODM)
+- **Seguridad**: Autenticación JWT, bcrypt, Express Rate Limit, Helmet, Mongo Sanitize
+- **Utilidades**: Multer (subida de archivos), Nodemailer, node-cron
 
 ---
 
-## 🚀 Getting Started
+## 🚀 Guía de Instalación
 
-### Prerequisites
+### Requisitos Previos
 
-Ensure you have the following installed on your local machine:
-- **Node.js** (v18 or higher)
-- **MongoDB** (running locally, or a MongoDB Atlas connection string)
+Asegúrate de tener instalado lo siguiente en tu máquina local:
+- **Node.js** (v18 o superior)
+- **MongoDB** (ejecutándose localmente, o una URI de conexión a MongoDB Atlas)
 - **Git**
 
-### 1. Clone the repository
+### 1. Clonar el repositorio
 
 ```bash
 git clone https://github.com/nelsonfern/gymSaaS.git
 cd gymSaaS
 ```
 
-### 2. Environment Variables
+### 2. Variables de Entorno
 
-You need to configure the `.env` variables for both the client and the server.
+Debes configurar las variables `.env` tanto para el cliente *(frontend)* como para el servidor *(backend)*.
 
-Create a `.env` file in the `/server` directory:
+Crea un archivo `.env` en el directorio `/server`:
 ```env
-PORT=3000
-MONGODB_URI=mongodb://localhost:27017/gymdb
-JWT_SECRET=your_super_secret_key_here
-MAIL_USER=your_email@gmail.com
-MAIL_PASS=your_app_password
+PORT=5100
+MONGO_URI=mongodb://localhost:27017/gymdb
+JWT_SECRET=tu_clave_super_secreta_aqui
+JWT_REFRESH_SECRET=tu_clave_refresh_secreta_aqui
+MAIL_USER=tu_correo@gmail.com
+MAIL_PASS=tu_contraseña_de_aplicacion
 MAIL_FROM_NAME="GymSaaS"
 CLIENT_URL=http://localhost:5173
 ```
 
-Create a `.env` file in the `/client` directory:
+Crea un archivo `.env` en el directorio `/client`:
 ```env
-VITE_API_URL=http://localhost:3000
+VITE_API_URL=http://localhost:5100
 ```
 
-### 3. Installation & Run (Local Development)
+### 3. Instalación y Ejecución (Desarrollo Local)
 
-**Running the Server:**
+**Levantar el Servidor (Backend):**
 ```bash
 cd server
 npm install
 npm run dev
 ```
 
-**Running the Client:**
+**Levantar el Cliente (Frontend):**
 ```bash
 cd client
 npm install
 npm run dev
 ```
 
-The frontend will be available at `http://localhost:5173` and the backend at `http://localhost:3000`.
+El frontend estará disponible en `http://localhost:5173` y el backend en `http://localhost:5100`.
 
 ---
 
-## 🐳 Docker Deployment (Optional)
+## 🐳 Despliegue con Docker (Opcional)
 
-GymSaaS comes with a `docker-compose.yml` file for quick setup and deployment. Ensure you have Docker and Docker Compose installed.
+GymSaaS viene con un archivo `docker-compose.yml` para una configuración y despliegue locales ultra rápidos. Asegúrate de tener Docker y Docker Compose instalados.
 
 ```bash
-# Build and run the containers in detached mode
+# Construye y ejecuta los contenedores en segundo plano
 docker-compose up --build -d
 ```
-This will spin up both the Frontend, Backend, and a MongoDB container automatically.
+Esto levantará automáticamente el Frontend, el Backend y un contenedor de base de datos MongoDB unidos en la misma red.
 
 ---
 
-## 📂 Project Structure
+## 📂 Estructura del Proyecto
 
 ```text
 gymSaaS/
-├── client/                 # React Frontend application
+├── client/                 # Aplicación Frontend (React)
 │   ├── src/
-│   │   ├── api/            # Axios configurations
-│   │   ├── components/     # Reusable UI components
-│   │   ├── context/        # React Context (AuthContext)
-│   │   ├── layouts/        # App Layouts and Sidebar
-│   │   ├── pages/          # Application views (Dashboard, Settings, Config, etc.)
-│   │   └── store/          # Zustand State Stores
-│   └── dockerfile          # Client Docker configuration
-├── server/                 # Node.js + Express Backend
-│   ├── config/             # DB Connection setups
-│   ├── controllers/        # Business logic for endpoints
-│   ├── helpers/            # Utilities and JWT middlewares
-│   ├── jobs/               # Cron jobs (membership status update)
-│   ├── models/             # Business logic abstractions
-│   ├── routes/             # Express API routes
-│   ├── schemas/            # Mongoose schemas
-│   ├── services/           # Mailers and 3rd party integrations
-│   └── dockerfile          # Backend Docker configuration
-└── docker-compose.yml      # Orchestrates all containers
+│   │   ├── api/            # Interceptores y configuraciones de Axios
+│   │   ├── components/     # Componentes de UI reutilizables
+│   │   ├── context/        # Contextos de React (AuthContext)
+│   │   ├── layouts/        # Layouts de la App y Sidebar
+│   │   ├── pages/          # Vistas (Dashboard, Settings, Config, etc.)
+│   │   └── store/          # Estado global manejado por Zustand
+│   └── dockerfile          # Configuración Docker del frontend
+├── server/                 # Backend (Node.js + Express)
+│   ├── config/             # Configuración de la base de datos
+│   ├── controllers/        # Controladores con lógica de negocio
+│   ├── helpers/            # Utilidades y middlewares de JWT/CORS
+│   ├── jobs/               # Tareas programadas (estado de membresía)
+│   ├── models/             # Abstracciones para interactuar con la DB
+│   ├── routes/             # Rutas de la API RESTful
+│   ├── schemas/            # Esquemas de datos Mongoose
+│   ├── services/           # Mailing e integraciones de terceros
+│   └── dockerfile          # Configuración Docker del backend
+└── docker-compose.yml      # Orchestración para todos los contenedores
 ```
 
 ---
 
-## 🛡️ Security
-This project uses:
-- **Helmet** to secure Express apps by setting various HTTP headers.
-- **Express Mongo Sanitize** to prevent MongoDB Operator Injection.
-- **Express Rate Limit** to prevent brute-force attacks on sensitive endpoints.
-- **JWT HTTP-Only Cookies** (if configured) or Bearer tokens for safe authentication.
+## 🛡️ Seguridad
+Consideraciones de seguridad construidas por defecto en la API:
+- **Helmet**: Configura cabeceras HTTP de forma segura para proteger la App Express.
+- **Express Mongo Sanitize**: Previene inyecciones NoSQL por parte de actores maliciosos.
+- **Express Rate Limit**: Límite de peticiones para mitigar ataques de denegación de servicio (DDoS) o ataques de fuerza bruta en los endpoints de Login.
+- **Autenticación JWT**: Mediante Bearer Tokens autorregulados basados en tiempo y validación segura del refresh token.
 
-## 🤝 Contributing
-Contributions, issues, and feature requests are welcome! 
-Feel free to check [issues page](https://github.com/nelsonfern/gymSaaS/issues).
+## 🤝 Contribuir
+¡Las contribuciones, reportes de problemas (issues) y solicitudes de nuevas características son siempre bienvenidas!
+No dudes en revisar la [página de issues](https://github.com/nelsonfern/gymSaaS/issues).
 
-## 📝 License
-This project is licensed under the ISC License.
+## 📝 Licencia
+Este proyecto está bajo la Licencia ISC.
